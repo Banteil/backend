@@ -2,6 +2,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,gradle,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,gradle,java
 
+### 각 프로젝트에 생성되는 gitignore 제거 ###
+**/.gitignore
+**/.gitattributes
+
 ### Java ###
 # Compiled class file
 *.class
@@ -75,6 +79,7 @@ $RECYCLE.BIN/
 
 ### Gradle ###
 .gradle
+**/.gradle/
 **/build/
 !src/**/build/
 
