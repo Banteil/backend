@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Info</title>
+  </head>
+  <body>
+    <form action="" method="post">
+      <div>
+        <label for="">이름</label>
+        <input
+          type="text"
+          name="username"
+          id="username"
+          th:value="${userinfo?.username}"
+        />
+      </div>
+      <div>
+        <label for="">나이</label>
+        <input type="number" name="age" id="age" th:value="${userinfo?.age}" />
+      </div>
+      <div>
+        <label for="">주소</label>
+        <input type="text" name="addr" id="addr" th:value="${userinfo?.addr}" />
+      </div>
+      <div>
+        <label for="">전화번호</label>
+        <input type="text" name="tel" id="tel" th:value="${userinfo?.tel}" />
+      </div>
+      <button type="submit">전송</button>
+    </form>
+    <p>[[${userinfo?.addr}]]</p>
+    <p th:text="${userinfo?.addr}"></p>
+  </body>
+</html>

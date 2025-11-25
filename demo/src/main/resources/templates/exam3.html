@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calc</title>
+  </head>
+  <body>
+    <form action="/add" method="get">
+      <div>
+        <input type="text" name="num1" id="num1" size="5" th:value="${num1}" />
+        <select name="op" id="op">
+          <option value="+" th:selected="${op eq '+'}">+</option>
+          <option value="-" th:selected="${op eq '-'}">-</option>
+          <option value="*" th:selected="${op eq '*'}">*</option>
+          <option value="/" th:selected="${op eq '/'}">/</option>
+        </select>
+        <input type="text" name="num2" id="num2" size="5" th:value="${num2}" />
+        <button type="submit">계산</button>
+        <input
+          type="text"
+          name="result"
+          id="result"
+          size="5"
+          readonly
+          th:value="${result}"
+        />
+      </div>
+    </form>
+
+    <script>
+      // num1, 2 입력값 가져오기
+      // + 연산 후 결과를 보여주기
+      const operationMap = {
+        "+": (a, b) => a + b,
+        "-": (a, b) => a - b,
+        "*": (a, b) => a * b,
+        "/": (a, b) => (b !== 0 ? a / b : "Error: Division by zero"),
+      };
+
+      const btn = document.querySelector("button");
+      btn.addEventListener("click", () => {
+        const num1 = document.getElementById("num1").value;
+        const num2 = document.getElementById("num2").value;
+        const op = document.getElementById("op").value;
+        const operationFunction = operationMap[op];
+        document.getElementById("result").value = operationFunction(
+          +num1,
+          +num2
+        );
+      });
+    </script>
+  </body>
+</html>

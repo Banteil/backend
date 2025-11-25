@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 //TemplateInputException : html 없어서 오류
 
@@ -15,8 +16,13 @@ public class BoardController {
         log.info("board/add 요청");
     }    
 
-    @GetMapping("/board/add2")
-    public void getAdd2() {
-        log.info("board/add2 요청");
+    @GetMapping("/board/modify")
+    public void getModify() {
+        log.info("board/modify 요청");
+    }    
+
+    @GetMapping("/board/read")
+    public void getRead(@ModelAttribute("no") int no) {
+        log.info("board/read 요청 {}", no);
     }    
 }
