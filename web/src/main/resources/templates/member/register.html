@@ -58,6 +58,38 @@
           th:errors="*{email}"
         ></div>
       </div>
+      <div class="mb-3">
+        <label for="name" class="form-label">이름</label>
+        <input
+          type="text"
+          class="form-control"
+          name="name"
+          id="name"
+          placeholder="이름"
+          th:value="*{name}"
+        />
+        <div
+          class="text-danger"
+          th:if="${#fields.hasErrors('name')}"
+          th:errors="*{name}"
+        ></div>
+      </div>
+      <div class="mb-3">
+        <label for="age" class="form-label">나이</label>
+        <input
+          type="text"
+          class="form-control"
+          name="age"
+          id="age"
+          placeholder="이름"
+          th:value="*{age}"
+        />
+        <div
+          class="text-danger"
+          th:if="${#fields.hasErrors('age')}"
+          th:errors="*{age}"
+        ></div>
+      </div>
       <div>
         <button type="submit" class="btn btn-outline-success">회원가입</button>
       </div>
