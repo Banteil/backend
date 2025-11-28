@@ -3,11 +3,10 @@ package com.example.jpa.entity;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.example.jpa.entity.constant.Grade;
+import com.example.jpa.entity.constant.RoleType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,49 +22,40 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @EntityListeners(value = AuditingEntityListener.class)
-@Entity // == 이 클래스는 테이블과 연동되어 있음
-@Table(name = "stutbl")
+@Entity
+@Table(name = "membertbl")
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class Student {
-    // @SequenceGenerator(name = "stu_seq_gen", sequenceName = "stu_seq", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stu_seq_gen")
+public class Member {
+    //컬럼 : 아이디, 이름(필수), 나이(필수), 역할(MEMBER, ADMIN), 가입일자, 수정일자, 자기소개
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // @Column(name="sname", length = 50, nullable = false, unique = true)
-    @Column(columnDefinition = "varchar(50) not null")
+    @Column(unique = true, nullable = false)
+    private String userId;
+    
+    @Column(nullable = false)
     private String name;
 
-    @Column
-    private String addr;
+    @Column(nullable = false)
+    private int age;
 
-    @Column(columnDefinition = "varchar(1) CONSTRAINT chk_gender CHECK (gender IN ('M', 'F'))")
-    private String gender;
-
-    // grade => FRESHMAN, SOPHOMORE, JUNIOR, SENIOR
     @Enumerated(EnumType.STRING)
     @Column
-    private Grade grade;
+    private RoleType role;
 
-    @CreationTimestamp // insert 시 자동으로 일자 삽입
-    private LocalDateTime createDateTime1;
-
-    @CreatedDate // spring boot 설정 후 삽입
-    private LocalDateTime createDateTime2;
+    @CreationTimestamp
+    private LocalDateTime registerDateTime;
 
     @LastModifiedDate
     private LocalDateTime updateDateTime;
 
-    public void changeName(String name) {
-        this.name = name;
-    }
+    @Column(length = 2000)
+    private String description;
 }
