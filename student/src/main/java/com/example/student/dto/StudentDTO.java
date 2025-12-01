@@ -1,9 +1,9 @@
-package com.example.memo.dto;
+package com.example.student.dto;
 
 import java.time.LocalDateTime;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import com.example.student.entity.constant.Grade;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,13 +17,12 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemoDTO {
+public class StudentDTO {
     private Long id;
-
-    @NotBlank(message = "빈 메모는 작성하실 수 없습니다.")
-    @Size(max = 255, message = "메모 내용은 최대 255자까지 입력할 수 있습니다.")
-    private String text;
-
+    private String name;
+    private String addr;
+    private String gender;
+    private Grade grade;
     private LocalDateTime createDateTime;
     private LocalDateTime updateDateTime;
 }

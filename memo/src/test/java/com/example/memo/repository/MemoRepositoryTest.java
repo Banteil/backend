@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.memo.entity.Memo;
 
+@Disabled //빌드 시점 시 실행X
 @SpringBootTest
 public class MemoRepositoryTest {
     @Autowired

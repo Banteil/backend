@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="css">
+    <style>
+      .card-text {
+        white-space: pre-wrap;
+      }
+    </style>
+  </th:block>
+  <th:block layout:fragment="title">
+    <title>Read</title>
+  </th:block>
+  <div layout:fragment="content">
+    <h1 class="mb-4">메모 상세 정보</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h6 class="card-subtitle mb-2 text-muted">
+          번호: <span th:text="${dto.id}">1</span> | 작성일:
+          <span
+            th:text="${#temporals.format(dto.createDateTime, 'yyyy-MM-dd HH:mm')}"
+            >2025-01-01</span
+          >
+        </h6>
+        <hr />
+
+        <p class="card-text fs-5" th:text="${dto.text}">
+          여기에 조회된 메모의 상세 내용이 표시됩니다.
+        </p>
+
+        <small class="text-secondary" th:if="${dto.updateDateTime != null}">
+          (수정됨:
+          <span
+            th:text="${#temporals.format(dto.updateDateTime, 'yyyy-MM-dd HH:mm')}"
+          ></span
+          >)
+        </small>
+      </div>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a th:href="@{/memo/list}" class="btn btn-secondary me-2">목록으로</a>
+
+      <a th:href="@{/memo/modify(id=${dto.id})}" class="btn btn-warning me-2"
+        >수정 (Modify)</a
+      >
+      <button type="button" class="btn btn-danger" id="removeBtn">
+        삭제 (Remove)
+      </button>
+
+      <form th:action="@{/memo/remove}" method="post" id="removeForm">
+        <input type="hidden" name="id" th:value="${dto.id}" />
+      </form>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script>
+      document
+        .getElementById("removeBtn")
+        .addEventListener("click", function () {
+          const confirmed = confirm(
+            "정말로 이 메모를 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다."
+          );
+          if (confirmed) {
+            document.getElementById("removeForm").submit();
+          }
+        });
+    </script>
+  </th:block>
+</html>
