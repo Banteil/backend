@@ -1,7 +1,7 @@
 <html>
   <nav class="navbar navbar-expand-lg bg-body-tertiary" th:fragment="nav">
     <div class="container-fluid">
-      <a class="navbar-brand" th:href="@{/}">MEMO</a>
+      <a class="navbar-brand" th:href="@{/}">학생관리</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -19,14 +19,19 @@
             <a
               class="nav-link active"
               aria-current="page"
-              th:href="@{/memo/list}"
-              >LIST</a
+              th:href="@{/student/list}"
+              >전체조회</a
             >
           </li>
           <li class="nav-item">
-            <a class="nav-link" th:href="@{/memo/create}">INSERT</a>
+            <a
+              class="nav-link active"
+              aria-current="page"
+              th:href="@{/student/register}"
+              >등록</a
+            >
           </li>
-          <li class="nav-item dropdown">
+          <!-- <li class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
@@ -45,7 +50,7 @@
           </li>
           <li class="nav-item">
             <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-          </li>
+          </li> -->
         </ul>
         <form class="d-flex" role="search">
           <input

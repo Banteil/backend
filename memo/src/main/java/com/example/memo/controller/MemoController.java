@@ -44,14 +44,14 @@ public class MemoController {
     }    
 
     @PostMapping("/modify")
-    public String postModify(MemoDTO dto, BindingResult result, RedirectAttributes redirectAttributes) {
+    public String postModify(MemoDTO dto, BindingResult result, RedirectAttributes rttr) {
         log.info("modify POST 요청: {}", dto);
         //유효성 검증 조건에 일치하지 않는 경우
         if(result.hasErrors()){
             return "/memo/modify";
         }
         Long id = memoService.modify(dto); 
-        redirectAttributes.addAttribute("id", id); 
+        rttr.addAttribute("id", id);         
         return "redirect:/memo/read?id={id}"; 
     }
 

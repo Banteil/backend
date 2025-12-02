@@ -35,13 +35,10 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Student {
-    // @SequenceGenerator(name = "stu_seq_gen", sequenceName = "stu_seq", allocationSize = 1)
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "stu_seq_gen")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // @Column(name="sname", length = 50, nullable = false, unique = true)
     @Column(columnDefinition = "varchar(50) not null")
     private String name;
 

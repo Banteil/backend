@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="title">
+    <title>학생 등록</title>
+  </th:block>
+  <div layout:fragment="content">
+    <div class="container mt-5">
+      <h1 class="mb-4">학생 등록</h1>
+
+      <!-- 폼 제출 경로: /student/register (POST) -->
+      <form th:action="@{/student/register}" th:object="${dto}" method="post">
+        <!-- 1. 이름 (name) 입력 필드 -->
+        <div class="mb-3">
+          <label for="name" class="form-label">이름</label>
+          <input
+            type="text"
+            th:field="*{name}"
+            class="form-control"
+            placeholder="학생 이름을 입력하세요"
+            required
+            maxlength="50"
+          />
+          <div th:errors="*{name}" class="text-danger mt-2"></div>
+        </div>
+
+        <!-- 2. 주소 (addr) 입력 필드 -->
+        <div class="mb-3">
+          <label for="addr" class="form-label">주소</label>
+          <input
+            type="text"
+            th:field="*{addr}"
+            class="form-control"
+            placeholder="주소를 입력하세요"
+            required
+            maxlength="255"
+          />
+          <div th:errors="*{addr}" class="text-danger mt-2"></div>
+        </div>
+
+        <!-- 3. 성별 (gender) 라디오 버튼 -->
+        <div class="mb-3">
+          <label class="form-label d-block">성별</label>
+
+          <!-- MALE -->
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              th:field="*{gender}"
+              value="M"
+              id="genderM"
+              required
+            />
+            <label class="form-check-label" for="genderM">남성</label>
+          </div>
+
+          <!-- FEMALE -->
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              th:field="*{gender}"
+              value="F"
+              id="genderF"
+            />
+            <label class="form-check-label" for="genderF">여성</label>
+          </div>
+          <div th:errors="*{gender}" class="text-danger mt-2"></div>
+        </div>
+
+        <!-- 4. 학년 (grade) 셀렉트 박스 -->
+        <div class="mb-4">
+          <label for="grade" class="form-label">학년</label>
+          <select th:field="*{grade}" class="form-select" required>
+            <option value="">-- 학년 선택 --</option>
+
+            <option
+              th:each="g : ${grades}"
+              th:value="${g}"
+              th:text="${g}"
+              th:selected="${g == dto.grade}"
+            >
+              FRESHMAN
+            </option>
+          </select>
+          <div th:errors="*{grade}" class="text-danger mt-2"></div>
+        </div>
+
+        <!-- 버튼 영역 -->
+        <div class="d-flex justify-content-end">
+          <a th:href="@{/}" class="btn btn-secondary me-2">취소</a>
+          <button type="submit" class="btn btn-primary">확인 (등록)</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+      const resultMessage = /*[[${msg}]]*/ "default";
+      if (resultMessage) {
+        Swal.fire({
+          title: resultMessage,
+          icon: "success",
+        });
+      }
+    </script>
+  </th:block>
+</html>

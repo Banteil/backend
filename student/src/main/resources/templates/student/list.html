@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="title">
+    <title>학생 목록</title>
+  </th:block>
+
+  <div layout:fragment="content">
+    <div class="container mt-5">
+      <h1 class="mb-4">학생 목록</h1>
+      <p th:if="${list == null or #lists.isEmpty(list.content)}">
+        등록된 학생이 없습니다.
+      </p>
+
+      <table
+        th:if="${list != null and not #lists.isEmpty(list.content)}"
+        class="table table-hover table-striped"
+      >
+        <thead>
+          <tr>
+            <th scope="col">학번 (ID)</th>
+            <th scope="col">이름</th>
+            <th scope="col">학년</th>
+            <th scope="col">성별</th>
+            <th scope="col">등록일</th>
+            <th scope="col">수정일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="student : ${list.content}">
+            <th scope="row" th:text="${student.id}">1</th>
+
+            <td>
+              <a
+                th:href="@{/student/read(id=${student.id})}"
+                th:text="${student.name}"
+              >
+                여기에 학생 이름이 표시됩니다.
+              </a>
+            </td>
+
+            <td th:text="${student.grade}"></td>
+
+            <td th:text="${student.gender == 'M' ? '남성' : '여성'}"></td>
+
+            <td
+              th:text="${#temporals.format(student.createDateTime, 'yyyy-MM-dd HH:mm')}"
+            ></td>
+
+            <td
+              th:text="${student.updateDateTime != null} 
+                         ? ${#temporals.format(student.updateDateTime, 'yyyy-MM-dd HH:mm')} 
+                         : '-'"
+            >
+              -
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+<div th:replace="~{fragments/pagination :: paginationFragment(${list})}"></div>
+
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+      const resultMessage = /*[[${msg}]]*/ "default";
+      if (resultMessage && resultMessage !== "default") {
+        Swal.fire({
+          title: resultMessage,
+          icon: "success",
+        });
+      }
+    </script>
+  </th:block>
+</html>

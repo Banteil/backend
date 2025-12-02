@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="css">
+    <style>
+      .card-text {
+        white-space: pre-wrap;
+      }
+    </style>
+  </th:block>
+  <th:block layout:fragment="title">
+    <title>학생 정보</title>
+  </th:block>
+  <div layout:fragment="content">
+    <div class="container mt-5">
+      <h1 class="mb-4">학생 정보 조회</h1>
+
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h6 class="card-subtitle mb-2 text-muted">
+            학번: <span th:text="${dto.id}">1</span> | 등록일:
+            <span
+              th:text="${#temporals.format(dto.createDateTime, 'yyyy-MM-dd HH:mm')}"
+              >2025-01-01</span
+            >
+          </h6>
+          <hr />
+
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <th style="width: 150px">이름</th>
+                <td th:text="${dto.name}">홍길동</td>
+              </tr>
+              <tr>
+                <th>주소</th>
+                <td th:text="${dto.addr}">서울시 강남구</td>
+              </tr>
+              <tr>
+                <th>학년</th>
+                <td th:text="${dto.grade}">SENIOR</td>
+              </tr>
+              <tr>
+                <th>성별</th>
+                <td th:text="${dto.gender == 'M' ? '남성' : '여성'}">M</td>
+              </tr>
+
+              <tr>
+                <th>수정일</th>
+                <td>
+                  <small
+                    class="text-secondary"
+                    th:if="${dto.updateDateTime != null}"
+                  >
+                    <span
+                      th:text="${#temporals.format(dto.updateDateTime, 'yyyy-MM-dd HH:mm')}"
+                    ></span>
+                  </small>
+                  <span th:unless="${dto.updateDateTime != null}">-</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="mt-4 text-center">
+        <a th:href="@{/student/list}" class="btn btn-secondary me-2"
+          >목록으로</a
+        >
+
+        <a
+          th:href="@{/student/modify(id=${dto.id})}"
+          class="btn btn-warning me-2"
+        >
+          수정 (Modify)
+        </a>
+
+        <button type="button" class="btn btn-danger" id="removeBtn">
+          삭제 (Remove)
+        </button>
+
+        <form th:action="@{/student/remove}" method="post" id="removeForm">
+          <input type="hidden" name="id" th:value="${dto.id}" />
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <th:block layout:fragment="script">
+    <script>
+      // 🌟 삭제 확인 팝업 및 폼 제출 로직 🌟
+      document
+        .getElementById("removeBtn")
+        .addEventListener("click", function () {
+          const confirmed = confirm(
+            "정말로 이 학생 정보를 삭제하시겠습니까?\n삭제된 데이터는 복구할 수 없습니다."
+          );
+          if (confirmed) {
+            // 취소 버튼의 href를 이용하여 목록 페이지 URL을 알릴 수도 있지만,
+            // 여기서는 깔끔하게 폼 제출만 수행합니다.
+            document.getElementById("removeForm").submit();
+          } else {
+            alert("삭제를 취소했습니다.");
+          }
+        });
+    </script>
+    <script th:inline="javascript">
+      const resultMessage = /*[[${msg}]]*/ "default";
+      if (resultMessage) {
+        Swal.fire({
+          title: resultMessage,
+          icon: "success",
+        });
+      }
+    </script>
+  </th:block>
+</html>
