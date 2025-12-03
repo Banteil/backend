@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <th:block th:fragment="paginationFragment(page)">
+    <nav
+      aria-label="Page navigation"
+      th:if="${page != null and page.totalPages > 1}"
+    >
+      <ul class="pagination justify-content-center">
+        <th:block
+          th:with="pageSize=10,
+                          start=${T(java.lang.Math).floor(page.number / pageSize) * pageSize}, 
+                          end=(${start + pageSize - 1 < page.totalPages ? start + pageSize - 1 : page.totalPages - 1})"
+        >
+          <li
+            class="page-item"
+            th:classappend="${page.number == 0} ? disabled : ''"
+          >
+            <a
+              class="page-link"
+              th:href="@{/student/list(page=1)}"
+              aria-label="First"
+              >&laquo;</a
+            >
+          </li>
+
+          <li class="page-item" th:classappend="${start == 0} ? disabled : ''">
+            <a
+              class="page-link"
+              th:href="@{/student/list(page=${#numbers.formatInteger(start, 0)})}"
+              aria-label="Previous"
+              >&lt;</a
+            >
+          </li>
+
+          <li
+            class="page-item"
+            th:each="i : ${#numbers.sequence(start, end)}"
+            th:classappend="${i == page.number} ? active : ''"
+          >
+            <a
+              class="page-link"
+              th:href="@{/student/list(page=${i + 1})}"
+              th:text="${i + 1}"
+              >1</a
+            >
+          </li>
+
+          <li
+            class="page-item"
+            th:classappend="${end >= page.totalPages - 1} ? disabled : ''"
+          >
+            <a
+              class="page-link"
+              th:href="@{/student/list(page=${#numbers.formatInteger(end + 2, 0)})}"
+              aria-label="Next"
+              >&gt;</a
+            >
+          </li>
+
+          <li
+            class="page-item"
+            th:classappend="${page.number >= page.totalPages - 1} ? disabled : ''"
+          >
+            <a
+              class="page-link"
+              th:href="@{/student/list(page=${page.totalPages})}"
+              aria-label="Last"
+              >&raquo;</a
+            >
+          </li>
+        </th:block>
+      </ul>
+    </nav>
+
+    <div class="d-flex justify-content-center align-items-center mt-3">
+      <form th:action="@{/student/list}" method="get" class="d-flex">
+        <input
+          type="number"
+          th:value="${page.number + 1}"
+          name="page"
+          class="form-control me-1"
+          style="width: 60px"
+          th:min="1"
+          th:max="${page.totalPages}"
+          required
+        />
+        <div class="me-2 d-flex align-items-center">
+          <span
+            th:text="| / ${page.totalPages}|"
+            style="font-weight: bold"
+          ></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm">이동</button>
+      </form>
+    </div>
+  </th:block>
+</html>

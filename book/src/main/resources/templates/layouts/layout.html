@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Book</title>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      th:href="@{/assets/images/logos/favicon.png}"
+    />
+    <link rel="stylesheet" th:href="@{/assets/css/styles.min.css}" />
+    <th:block layout:fragment="css">
+      <!-- 페이지별 개별 css 작성 -->
+    </th:block>
+  </head>
+
+  <body>
+    <!--  Body Wrapper -->
+    <div
+      class="page-wrapper"
+      id="main-wrapper"
+      data-layout="vertical"
+      data-navbarbg="skin6"
+      data-sidebartype="full"
+      data-sidebar-position="fixed"
+      data-header-position="fixed"
+    >
+      <!--  App Topstrip -->
+      <div th:replace="~{fragments/strip::strip}"></div>
+      <!-- Sidebar Start -->
+      <div th:replace="~{fragments/sidebar::sidebar}"></div>
+      <!--  Sidebar End -->
+      <!--  Main wrapper -->
+      <div class="body-wrapper">
+        <!--  Header Start -->
+        <div th:replace="~{fragments/header::header}"></div>
+        <!--  Header End -->
+        <div class="body-wrapper-inner">
+          <div class="container-fluid">
+            <!--  Row 1 -->
+            <div class="row">
+              <div layout:fragment="content"></div>
+            </div>
+            <div class="py-6 px-6 text-center">
+              <p class="mb-0 fs-4">
+                Design and Developed by
+                <a href="#" class="pe-1 text-primary text-decoration-underline"
+                  >Wrappixel.com</a
+                >
+                Distributed by
+                <a href="https://themewagon.com" target="_blank">ThemeWagon</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script th:src="@{/assets/libs/jquery/dist/jquery.min.js}"></script>
+    <script
+      th:src="@{/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js}"
+    ></script>
+    <script th:src="@{/assets/js/sidebarmenu.js}"></script>
+    <script th:src="@{/assets/js/app.min.js}"></script>
+    <script th:src="@{/assets/libs/apexcharts/dist/apexcharts.min.js}"></script>
+    <script th:src="@{/assets/libs/simplebar/dist/simplebar.js}"></script>
+    <script th:src="@{/assets/js/dashboard.js}"></script>
+    <!-- solar icons -->
+    <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <th:block layout:fragment="script">
+      <!-- 페이지별 개별 js 작성 -->
+    </th:block>
+  </body>
+</html>
