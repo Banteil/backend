@@ -50,68 +50,58 @@ public class BookController {
             return "/book/register";
         }
 
-        Long id = bookService.insert(dto);
-        rttr.addFlashAttribute("msg", id + "번 책이 등록되었습니다.");
+        bookService.insert(dto);
+        rttr.addFlashAttribute("msg", dto.getTitle() + " 도서가 등록되었습니다.");
         return "redirect:/book/register";
     }
 
-    // @GetMapping({ "/read", "/modify" })
-    // public void getReadAndModify(Long id, Model model) {
-    // log.info("student id : {}", id);
-    // BookDTO readDto = studentService.read(id);
-    // model.addAttribute("dto", readDto);
-    // model.addAttribute("grades", Grade.values());
-    // }
+    @GetMapping({ "/read", "/modify" })
+    public void getReadAndModify(
+            Long id,
+            Model model,
+            @RequestParam(value = "fromPage", required = false) String fromPage) {
 
-    // @PostMapping("/modify")
-    // public String postModify(@ModelAttribute("dto") @Valid BookDTO dto,
-    // BindingResult result,
-    // RedirectAttributes rttr) {
-    // log.info("modify POST 요청: {}", dto);
-    // // 유효성 검증 조건에 일치하지 않는 경우
-    // if (result.hasErrors()) {
-    // return "/student/modify";
-    // }
-    // Long id = studentService.update(dto);
-    // rttr.addAttribute("id", id);
-    // rttr.addFlashAttribute("msg", id + "번 학생 정보가 성공적으로 수정되었습니다.");
-    // return "redirect:/student/read?id={id}";
-    // }
+        log.info("book id : {}", id);
+        BookDTO dto = bookService.read(id);
+        model.addAttribute("dto", dto);
+        model.addAttribute("fromPage", fromPage);
+    }
 
-    // @PostMapping("/remove")
-    // public String postRemove(@RequestParam Long id, RedirectAttributes rttr) {
-    // log.info("remove POST 요청 ID: {}", id);
-    // studentService.delete(id);
-    // rttr.addFlashAttribute("msg", "삭제가 완료되었습니다.");
-    // return "redirect:/student/list";
-    // }
+    @PostMapping("/modify")
+    public String postModify(@ModelAttribute("dto") @Valid BookDTO dto,
+            BindingResult result,
+            @RequestParam(value = "fromPage", required = false) String fromPage, // 폼에서 전달된 fromPage를 받음
+            RedirectAttributes rttr) {
 
-    // @GetMapping("/list")
-    // public String getList(Model model,
-    // @RequestParam(value = "page", defaultValue = "1") int page, // page 파라미터를 1부터
-    // 받음
-    // @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC)
-    // Pageable pageableDefault) {
+        log.info("modify POST 요청: {}", dto);
 
-    // // 사용자가 입력한 1-based page 번호를 0-based index로 변환
-    // int pageIndex = page - 1;
-    // if (pageIndex < 0) {
-    // pageIndex = 0; // 최소 페이지 인덱스는 0으로 보장
-    // }
+        if (result.hasErrors()) {
+            return "/book/modify";
+        }
 
-    // // 기존 pageableDefault의 size, sort 정보를 사용하여 새로운 PageRequest 생성
-    // Pageable pageable = PageRequest.of(pageIndex,
-    // pageableDefault.getPageSize(),
-    // pageableDefault.getSort());
+        Long id = bookService.update(dto);
+        rttr.addFlashAttribute("msg", "ID " + id + "번 도서 정보가 성공적으로 수정되었습니다.");
 
-    // log.info("학생 목록 요청 - 페이지 인덱스: {}", pageable.getPageNumber()); // 0-based 출력
-    // Page<BookDTO> studentsPage = studentService.readAll(pageable);
+        if ("list".equals(fromPage)) {
+            return "redirect:/book/list";
+        } else {
+            rttr.addAttribute("id", id);
+            return "redirect:/book/read";
+        }
+    }
 
-    // // Page 객체는 그대로 list라는 이름으로 모델에 추가
-    // // Thymeleaf 코드에서는 여전히 page.number (0-based)를 사용해야 함
-    // model.addAttribute("list", studentsPage);
-    // // model.addAttribute("maxPage", 10); // 이 값은 실제 totalPages로 대체하는 것이 좋습니다.
+    @PostMapping("/remove")
+    public String postRemove(@RequestParam Long id, RedirectAttributes rttr) {
+        log.info("remove POST 요청 ID: {}", id);
+        String title = bookService.delete(id);
+        rttr.addFlashAttribute("msg", title + " 도서가 삭제되었습니다.");
+        return "redirect:/book/list";
+    }
 
-    // return "student/list";
-    // }
+    @GetMapping("/list")
+    public String getList(Model model) {
+        List<BookDTO> bookList = bookService.readAll(); // 페이지네이션 없는 전체 조회 메서드 가정
+        model.addAttribute("list", bookList);
+        return "book/list"; // Thymeleaf 템플릿 파일 이름이 book/list.html이라고 가정
+    }
 }

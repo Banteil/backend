@@ -48,6 +48,9 @@ public class Book {
     @Column(nullable = false)
     private String author;
 
+    @Column
+    private String description;
+
     @CreationTimestamp // insert 시 자동으로 일자 삽입
     private LocalDateTime createDateTime;
 

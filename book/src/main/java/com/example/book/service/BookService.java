@@ -75,8 +75,12 @@ public class BookService {
         return bookRepository.save(book).getId();
     }
 
-    public void delete(Long id) {
+    public String delete(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("책을 찾을 수 없습니다."));
+        String title = book.getTitle();
         bookRepository.deleteById(id);
+        return title;
     }
 
 }

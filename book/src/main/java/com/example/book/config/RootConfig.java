@@ -13,7 +13,8 @@ public class RootConfig {
         modelMapper.getConfiguration()
                 .setFieldMatchingEnabled(true) // 필드명 같은 경우 매핑
                 .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
-                .setMatchingStrategy(MatchingStrategies.LOOSE);
+                .setMatchingStrategy(MatchingStrategies.LOOSE)
+                .setSkipNullEnabled(true);
         return modelMapper;
     }
 }
