@@ -1,32 +1,36 @@
 package com.example.jpa.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+@Data
+@ToString(exclude = "childs")
 @Builder
-@Data()
-@ToString(exclude = "team")
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class TeamMember {
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Parent {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "PARENT_ID")
     private Long id;
+
     @Column(nullable = false)
     private String name;
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "team_id")
-    private Team team;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "parent")
+    private List<Child> childs = new ArrayList<>();
 }

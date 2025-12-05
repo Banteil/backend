@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.example.jpa.entity.Team;
 import com.example.jpa.entity.TeamMember;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 public class TeamMemberRepositoryTest {
     @Autowired
@@ -18,9 +20,11 @@ public class TeamMemberRepositoryTest {
     private TeamMemberRepository teamMemberRepository;
 
     @Test
+    @Transactional
     public void readTest() {
         TeamMember result = teamMemberRepository.findById(1L).get();
-        System.out.println(result.toString());
+        System.out.println(result);
+        System.out.println(result.getTeam());
     }
 
     @Test
