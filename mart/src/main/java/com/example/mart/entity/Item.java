@@ -1,4 +1,4 @@
-package com.example.jpa.entity;
+package com.example.mart.entity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,28 +10,38 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
-@ToString(exclude = "childs")
+@Entity
+@Table(name = "mart_item")
 @Builder
+@Setter
+@Getter
+@ToString(exclude = "orderItems")
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Parent {
+public class Item extends BaseEntity {
+    // id, name, price, quantity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "PARENT_ID")
     private Long id;
 
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private Integer price;
+
+    @Column(nullable = false)
+    private Integer quantity;
+
     @Builder.Default
-    @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Child> childs = new ArrayList<>();
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems = new ArrayList<>();
 }

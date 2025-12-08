@@ -1,6 +1,5 @@
-package com.example.jpa.entity;
+package com.example.mart.entity;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -10,33 +9,33 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
-@ToString(exclude = "parent")
+@Entity
 @Builder
+@Setter
+@Getter
+@ToString(exclude = { "order", "item" })
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-public class Child {
+public class OrderItem extends BaseEntity {
+    // id, orderPrice, count
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "CHILD_ID")
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private Integer orderPrice;
+
+    @Column(nullable = false)
+    private Integer count;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Parent parent;
+    private Order order;
 
-    public void replaceParent(Parent parent) {
-        if (this.parent != null) {
-            this.parent.getChilds().remove(this);
-        }
-        this.parent = parent;
-        parent.getChilds().add(this);
-    }
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private Item item;
 }

@@ -7,8 +7,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 
 import com.example.jpa.entity.Team;
+import com.example.jpa.entity.TeamMember;
 
 import jakarta.transaction.Transactional;
 
@@ -67,5 +69,23 @@ public class TeamRepositoryTest {
         }
 
         teamRepository.saveAll(teams);
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    public void insertCascadeTest() {
+        Team t = Team.builder().name("new").build();
+        t.getMembers().add(TeamMember.builder().name("강감찬").team(t).build());
+        teamRepository.save(t);
+    }
+
+    @Test
+    @Transactional
+    @Commit
+    public void updateCascadeTest() {
+        Team t = teamRepository.findById(22L).get();
+        TeamMember tM = t.getMembers().get(0);
+        tM.setName("홍시루");
     }
 }

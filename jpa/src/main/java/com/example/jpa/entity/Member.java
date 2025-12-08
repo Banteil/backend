@@ -31,15 +31,15 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Member {
-    //컬럼 : 아이디, 이름(필수), 나이(필수), 역할(MEMBER, ADMIN), 가입일자, 수정일자, 자기소개
+public class Member extends BaseEntity {
+    // 컬럼 : 아이디, 이름(필수), 나이(필수), 역할(MEMBER, ADMIN), 가입일자, 수정일자, 자기소개
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
     private String userId;
-    
+
     @Column(nullable = false)
     private String name;
 
@@ -49,12 +49,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     @Column
     private RoleType role;
-
-    @CreationTimestamp
-    private LocalDateTime registerDateTime;
-
-    @LastModifiedDate
-    private LocalDateTime updateDateTime;
 
     @Column(length = 2000)
     private String description;
