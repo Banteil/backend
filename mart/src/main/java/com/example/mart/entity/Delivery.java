@@ -1,13 +1,16 @@
 package com.example.mart.entity;
 
+import com.example.mart.entity.constant.DeliveryStatus;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,27 +20,31 @@ import lombok.ToString;
 
 @Entity
 @Builder
-@Setter
 @Getter
-@ToString(exclude = { "order", "item" })
+@Setter
+@ToString(exclude = "order")
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem extends BaseEntity {
-    // id, orderPrice, count
+public class Delivery extends BaseEntity {
+    // id, orderStauts
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "delivery_id")
     private Long id;
 
     @Column(nullable = false)
-    private Integer orderPrice;
+    private String city;
 
     @Column(nullable = false)
-    private Integer count;
+    private String street;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @Column(nullable = false)
+    private String zipcode;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private DeliveryStatus deliveryStatus;
+
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Order order;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "item_id")
-    private Item item;
 }

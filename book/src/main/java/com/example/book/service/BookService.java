@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.book.dto.BookDTO;
 import com.example.book.entity.Book;
@@ -20,6 +21,7 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 @Log4j2
 @Service
+@Transactional
 public class BookService {
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
@@ -30,6 +32,7 @@ public class BookService {
         return bookRepository.save(book).getId();
     }
 
+    @Transactional(readOnly = true)
     public BookDTO read(Long id) {
         // NoSuchElementException
         Book book = bookRepository.findById(id).orElseThrow();
@@ -37,6 +40,7 @@ public class BookService {
         return modelMapper.map(book, BookDTO.class);
     }
 
+    @Transactional(readOnly = true)
     public List<BookDTO> readTitle(String title) {
         List<Book> result = bookRepository.findByTitleContaining(title);
 
@@ -47,11 +51,13 @@ public class BookService {
         return list;
     }
 
+    @Transactional(readOnly = true)
     public BookDTO readIsbn(String isbn) {
         Book result = bookRepository.findFirstByIsbn(isbn).orElseThrow();
         return modelMapper.map(result, BookDTO.class);
     }
 
+    @Transactional(readOnly = true)
     public List<BookDTO> readAll() {
         List<Book> books = bookRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
 
@@ -62,6 +68,7 @@ public class BookService {
         return list;
     }
 
+    @Transactional(readOnly = true)
     public Page<BookDTO> readAll(Pageable pageable) {
         Page<Book> bookPage = bookRepository.findAll(pageable);
         Page<BookDTO> dtoPage = bookPage.map(Book::toDTO);
@@ -72,7 +79,8 @@ public class BookService {
         Book book = bookRepository.findById(dto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("책을 찾을 수 없습니다."));
         modelMapper.map(dto, book);
-        return bookRepository.save(book).getId();
+        // return bookRepository.save(book).getId();
+        return book.getId();
     }
 
     public String delete(Long id) {

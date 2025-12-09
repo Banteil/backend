@@ -16,4 +16,18 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Optional<Book> findFirstByTitle(String title);
 
     List<Book> findByTitleContaining(String title);
+
+    List<Book> findByAuthor(String author);
+
+    // where author like '%영'
+    List<Book> findByAuthorStartingWith(String author);
+
+    // where author like '박%'
+    List<Book> findByAuthorEndingWith(String author);
+
+    // where author like '%진수%'
+    List<Book> findByAuthorContaining(String author);
+
+    // ~이상 ~ 이하
+    List<Book> findByPriceBetween(int startPrice, int endPrice);
 }

@@ -6,12 +6,16 @@ import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,38 +24,28 @@ import lombok.Setter;
 import lombok.ToString;
 
 @Entity
-@Table(name = "mart_item")
 @Builder
-@Setter
 @Getter
-@ToString(exclude = { "orderItems", "categoryItems" })
+@Setter
+@ToString(exclude = "categoryItems")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Item extends BaseEntity {
-    // id, name, price, quantity
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "item_id")
+    @Column(name = "category_id")
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String name;
 
-    @Column(nullable = false)
-    private Integer price;
-
-    @Column(nullable = false)
-    private Integer quantity;
-
     @Builder.Default
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OrderItem> orderItems = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CategoryItem> categoryItems = new ArrayList<>();
 
     // @Builder.Default
-    // @ManyToMany(mappedBy = "items", cascade = CascadeType.ALL)
-    // private List<Category> categories = new ArrayList<>();
+    // @ManyToMany
+    // @JoinTable(name = "category_item", joinColumns = @JoinColumn(name =
+    // "category_id"), inverseJoinColumns = @JoinColumn(name = "item_id"))
+    // private List<Item> items = new ArrayList<>();
 }

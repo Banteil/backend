@@ -77,4 +77,15 @@ class BookRepositoryTest {
 		bookRepository.saveAll(bookList);
 	}
 
+	@Test
+	public void testFindBy() {
+		List<Book> list = bookRepository.findByAuthor("성춘");
+		System.out.println(list);
+
+		List<Book> list2 = bookRepository.findByAuthorEndingWith("향");
+		System.out.println(list2);
+
+		List<Book> list3 = bookRepository.findByAuthorStartingWith("알");
+		System.out.println(list3);
+	}
 }

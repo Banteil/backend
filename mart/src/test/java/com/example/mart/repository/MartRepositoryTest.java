@@ -13,7 +13,11 @@ import org.springframework.test.annotation.Commit;
 import com.example.mart.entity.Member;
 import com.example.mart.entity.Order;
 import com.example.mart.entity.OrderItem;
+import com.example.mart.entity.constant.DeliveryStatus;
 import com.example.mart.entity.constant.OrderStatus;
+import com.example.mart.entity.Category;
+import com.example.mart.entity.CategoryItem;
+import com.example.mart.entity.Delivery;
 import com.example.mart.entity.Item;
 
 import jakarta.transaction.Transactional;
@@ -29,6 +33,12 @@ public class MartRepositoryTest {
     private OrderRepository oR;
     @Autowired
     private OrderItemRepository oIR;
+    @Autowired
+    private DeliveryRepository dR;
+    @Autowired
+    private CategoryRepository cR;
+    @Autowired
+    private CategoryItemRepository cIR;
 
     @Test
     @Commit
@@ -105,5 +115,97 @@ public class MartRepositoryTest {
                 System.out.println("제품명 : " + orderItem.getItem().getName());
             }
         }
+    }
+
+    @Test
+    @Commit
+    public void orderCascadeTest() {
+        Member member = mR.findById(3L).get();
+        Item item = iR.findById(3L).get();
+
+        Order order = Order.builder()
+                .member(member)
+                .orderStatus(OrderStatus.ORDER)
+                .build();
+
+        OrderItem orderItem = OrderItem.builder()
+                .item(item)
+                .orderPrice(item.getPrice())
+                .count(1)
+                .build();
+
+        order.addOrderItem(orderItem);
+        oR.save(order);
+    }
+
+    @Test
+    @Commit
+    public void testUpdate() {
+        // Member member = mR.findById(3L).get();
+        // member.setCity("부산");
+
+        Item item = iR.findById(3L).get();
+        item.setQuantity(300);
+    }
+
+    @Commit
+    @Test
+    public void testDelete() {
+        oR.deleteById(4L);
+    }
+
+    @Commit
+    @Test
+    public void testOrphanDelete() {
+        Order order = oR.findById(3L).get();
+        order.removeOrderItem(3L);
+    }
+
+    @Commit
+    @Test
+    public void testDelivery() {
+        Member member = mR.findById(1L).get();
+        Item item = iR.findById(1L).get();
+
+        Delivery delivery = Delivery.builder()
+                .city("부산")
+                .street("동대신동")
+                .zipcode("10-31")
+                .deliveryStatus(DeliveryStatus.SHIPPING)
+                .build();
+
+        Order order = Order.builder()
+                .member(member)
+                .orderStatus(OrderStatus.ORDER)
+                .delivery(delivery)
+                .build();
+
+        OrderItem orderItem = OrderItem.builder()
+                .item(item)
+                .orderPrice(item.getPrice())
+                .count(1)
+                .build();
+
+        order.addOrderItem(orderItem);
+        oR.save(order);
+    }
+
+    @Test
+    @Commit
+    public void categoryTest() {
+        Item item = iR.findById(1L).get();
+        Category category = Category.builder().name("가전제품").build();
+        CategoryItem cI = CategoryItem.builder().item(item).category(category).build();
+        cIR.save(cI);
+
+        Category category2 = Category.builder().name("생활용품").build();
+        CategoryItem cI2 = CategoryItem.builder().item(item).category(category2).build();
+        cIR.save(cI2);
+    }
+
+    @Test
+    public void categoryReadTest() {
+        CategoryItem item = cIR.findById(1L).get();
+        System.out.println(item.getCategory());
     }
 }

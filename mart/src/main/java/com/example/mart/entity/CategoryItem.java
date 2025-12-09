@@ -1,13 +1,19 @@
 package com.example.mart.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,25 +25,20 @@ import lombok.ToString;
 @Builder
 @Setter
 @Getter
-@ToString(exclude = { "order", "item" })
+@ToString(exclude = { "category", "item" })
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem extends BaseEntity {
-    // id, orderPrice, count
+public class CategoryItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "category_item_id")
     private Long id;
 
-    @Column(nullable = false)
-    private Integer orderPrice;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "category_id")
+    private Category category;
 
-    @Column(nullable = false)
-    private Integer count;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Order order;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id")
     private Item item;
 }
