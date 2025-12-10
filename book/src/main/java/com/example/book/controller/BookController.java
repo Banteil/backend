@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.book.dto.BookDTO;
+import com.example.book.dto.PageRequestDTO;
+import com.example.book.dto.PageResultDTO;
 import com.example.book.service.BookService;
 
 @RequiredArgsConstructor
@@ -99,9 +101,16 @@ public class BookController {
     }
 
     @GetMapping("/list")
-    public String getList(Model model) {
-        List<BookDTO> bookList = bookService.readAll(); // 페이지네이션 없는 전체 조회 메서드 가정
-        model.addAttribute("list", bookList);
-        return "book/list"; // Thymeleaf 템플릿 파일 이름이 book/list.html이라고 가정
+    public String list(PageRequestDTO pageRequestDTO, Model model) {
+        Page<BookDTO> bookPage = bookService.readAll(pageRequestDTO);
+        PageResultDTO<BookDTO> resultDTO = PageResultDTO.<BookDTO>withAll()
+                .dtoList(bookPage.getContent())
+                .pageRequestDTO(pageRequestDTO)
+                .totalCount((int) bookPage.getTotalElements())
+                .build();
+
+        model.addAttribute("list", bookPage.getContent());
+        model.addAttribute("page", resultDTO);
+        return "book/list";
     }
 }

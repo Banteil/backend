@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 
 import com.example.book.dto.BookDTO;
+import com.example.book.dto.PageRequestDTO;
 import com.example.book.entity.Book;
 import com.example.book.repository.BookRepository;
 
@@ -48,6 +50,19 @@ class BookServiceTest {
 	}
 
 	@Test
+	public void testReadPageDTO() {
+		PageRequestDTO dto = PageRequestDTO.builder()
+				.page(1)
+				.size(10)
+				.build();
+		Page<BookDTO> bookPages = bookService.readAll(dto);
+		String formattedOutput = String.join("\n", bookPages.stream()
+				.map(Object::toString)
+				.collect(Collectors.toList()));
+		System.out.println(formattedOutput);
+	}
+
+	@Test
 	public void testUpdate() {
 		BookDTO dto = BookDTO.builder()
 				.isbn("B00001")
@@ -68,11 +83,12 @@ class BookServiceTest {
 	}
 
 	@Test
-	public void readTitle() {
+	public void testReadTitle() {
 		List<Book> result = bookRepository.findByTitleContaining("책");
 		List<BookDTO> list = result.stream()
 				.map(book -> mapper.map(book, BookDTO.class))
 				.collect(Collectors.toList());
 		System.out.println(list);
 	}
+
 }

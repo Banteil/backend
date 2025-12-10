@@ -55,11 +55,22 @@ public class TeamMemberRepositoryTest {
                 .orElseThrow(() -> new RuntimeException("Team not found"));
 
         TeamMember team = TeamMember.builder()
-                .name("성춘향")
+                .name("변학도")
                 .team(existingTeam)
                 .build();
 
         // insert(c), update(u) 작업 시 호출
         teamMemberRepository.save(team);
+    }
+
+    @Test
+    public void testQuery() {
+        // Team getTeam = teamRepository.findById(1L).get();
+        var result = teamMemberRepository.findByMemberAndTeam(1L);
+        for (Object[] objects : result) {
+            var member = (TeamMember) objects[0];
+            var team = (Team) objects[1];
+            System.out.println(member + ", " + team);
+        }
     }
 }

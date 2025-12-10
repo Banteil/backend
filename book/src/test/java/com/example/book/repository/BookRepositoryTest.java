@@ -6,8 +6,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 import com.example.book.entity.Book;
+import com.example.book.entity.QBook;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -87,5 +89,20 @@ class BookRepositoryTest {
 
 		List<Book> list3 = bookRepository.findByAuthorStartingWith("알");
 		System.out.println(list3);
+	}
+
+	@Test
+	public void querydslTest() {
+		QBook book = QBook.book;
+
+		// System.out.println(bookRepository.findAll(book.title.eq("책 47")));
+		// System.out.println(bookRepository.findAll(book.title.contains("64")));
+		// System.out.println(bookRepository.findAll(book.title.contains("책").and(book.id.gt(90L))));
+		// // where author '%천%' or title='%파워%'
+		// System.out.println(bookRepository.findAll(book.title.contains("책").or(book.author.contains("토"))));
+		var pR = PageRequest.of(0, 20);
+		var result = bookRepository.findAll(book.id.gt(10L), pR);
+		var content = result.getContent();
+		System.out.println(content);
 	}
 }

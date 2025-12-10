@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.book.dto.BookDTO;
+import com.example.book.dto.PageRequestDTO;
 import com.example.book.entity.Book;
 import com.example.book.repository.BookRepository;
 
@@ -72,6 +73,15 @@ public class BookService {
     public Page<BookDTO> readAll(Pageable pageable) {
         Page<Book> bookPage = bookRepository.findAll(pageable);
         Page<BookDTO> dtoPage = bookPage.map(Book::toDTO);
+        return dtoPage;
+    }
+
+    @Transactional(readOnly = true)
+    public Page<BookDTO> readAll(PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.toPageable();
+        Page<Book> bookPage = bookRepository.findAll(pageable);
+        Page<BookDTO> dtoPage = bookPage.map(Book::toDTO);
+
         return dtoPage;
     }
 
