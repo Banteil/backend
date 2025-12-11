@@ -75,7 +75,8 @@
 
             <div class="d-flex justify-content-between mt-4">
               <a
-                th:href="${fromPage == 'list'} ? @{/book/list} : @{/book/read(id=${dto.id})}"
+                th:href="${fromPage == 'list'} ? @{/book/list(page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword})} : 
+                @{/book/read(id=${dto.id}, page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword})}"
                 class="btn btn-secondary"
               >
                 취소 및 돌아가기

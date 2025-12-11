@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="kr" layout:decorate="~{layouts/layout}">
+  <div layout:fragment="content">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title fw-semibold mb-4">게시글</h5>
+        <div class="table-responsive">
+          <table class="table table-bordered mb-4">
+            <tbody>
+              <tr>
+                <th scope="row" style="width: 150px">ID</th>
+                <td th:text="${dto.id}">1</td>
+              </tr>
+              <tr>
+                <th scope="row">코드 (ISBN)</th>
+                <td th:text="${dto.isbn}">978-89-6000-000-0</td>
+              </tr>
+              <tr>
+                <th scope="row">제목</th>
+                <td th:text="${dto.title}">책 제목입니다.</td>
+              </tr>
+              <tr>
+                <th scope="row">설명</th>
+                <td style="white-space: pre-wrap" th:text="${dto.description}">
+                  책 설명입니다.
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">저자</th>
+                <td th:text="${dto.author}">홍길동</td>
+              </tr>
+              <tr>
+                <th scope="row">가격</th>
+                <td
+                  th:text="${#numbers.formatDecimal(dto.price, 0, 'COMMA', 0, 'POINT')} + '원'"
+                >
+                  25,000원
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">등록일</th>
+                <td
+                  th:text="${#temporals.format(dto.createDateTime, 'yyyy-MM-dd HH:mm:ss')}"
+                >
+                  2023-10-26 10:00:00
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">수정일</th>
+                <td
+                  th:text="${#temporals.format(dto.updateDateTime, 'yyyy-MM-dd HH:mm:ss')}"
+                >
+                  2023-10-26 11:00:00
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a
+            th:href="@{/board/list(page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword})}"
+            class="btn btn-secondary"
+            >목록으로</a
+          >
+
+          <div>
+            <a
+              th:href="@{/board/modify(id=${dto.id}, page=${requestDTO.page}, , type=${requestDTO.type}, keyword=${requestDTO.keyword}, fromPage='read')}"
+              class="btn btn-primary me-2"
+              >수정</a
+            >
+
+            <form
+              th:action="@{/board/remove}"
+              method="post"
+              style="display: inline"
+              th:data-booktitle="${dto.title}"
+              onsubmit="return confirm('정말로 도서 ' + this.getAttribute('data-booktitle') + '을(를) 삭제하시겠습니까?');"
+            >
+              <input type="hidden" name="id" th:value="${dto.id}" />
+
+              <button type="submit" class="btn btn-danger">삭제</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+      const resultMessage = /*[[${msg}]]*/ "default";
+      if (resultMessage) {
+        Swal.fire({
+          title: resultMessage,
+          icon: "success",
+        });
+      }
+    </script>
+  </th:block>
+</html>

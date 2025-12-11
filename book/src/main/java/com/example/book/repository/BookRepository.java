@@ -39,6 +39,17 @@ public interface BookRepository extends JpaRepository<Book, Long>, QuerydslPredi
         BooleanBuilder builder = new BooleanBuilder();
         QBook book = QBook.book;
         builder.and(book.id.gt(0));
+        if (type == null || type.isEmpty() || keyword == null || keyword.isEmpty()) {
+            return builder;
+        }
+        switch (type) {
+            case "t":
+                builder.and(book.title.contains(keyword));
+                break;
+            case "a":
+                builder.and(book.author.contains(keyword));
+                break;
+        }
         return builder;
     }
 }

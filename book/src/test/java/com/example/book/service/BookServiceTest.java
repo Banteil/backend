@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 
 import com.example.book.dto.BookDTO;
 import com.example.book.dto.PageRequestDTO;
+import com.example.book.dto.PageResultDTO;
 import com.example.book.entity.Book;
 import com.example.book.repository.BookRepository;
 
@@ -91,4 +92,22 @@ class BookServiceTest {
 		System.out.println(list);
 	}
 
+	@Test
+	public void querydslTest() {
+		PageRequestDTO dto = PageRequestDTO.builder()
+				.page(1)
+				.size(10)
+				.type("t")
+				.keyword("27")
+				.build();
+		var bookPage = bookService.readAll(dto);
+
+		PageResultDTO<BookDTO> resultDTO = PageResultDTO.<BookDTO>withAll()
+				.dtoList(bookPage.getContent())
+				.pageRequestDTO(dto)
+				.totalCount((int) bookPage.getTotalElements())
+				.build();
+		System.out.println(resultDTO.getDtoList());
+		System.out.println(resultDTO.getTotalCount());
+	}
 }

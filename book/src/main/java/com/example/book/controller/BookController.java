@@ -61,12 +61,14 @@ public class BookController {
     public void getReadAndModify(
             Long id,
             Model model,
+            PageRequestDTO pageRequestDTO,
             @RequestParam(value = "fromPage", required = false) String fromPage) {
 
         log.info("book id : {}", id);
         BookDTO dto = bookService.read(id);
         model.addAttribute("dto", dto);
         model.addAttribute("fromPage", fromPage);
+        model.addAttribute("requestDTO", pageRequestDTO);
     }
 
     @PostMapping("/modify")
@@ -110,7 +112,8 @@ public class BookController {
                 .build();
 
         model.addAttribute("list", bookPage.getContent());
-        model.addAttribute("page", resultDTO);
+        model.addAttribute("requestDTO", pageRequestDTO);
+        model.addAttribute("result", resultDTO);
         return "book/list";
     }
 }

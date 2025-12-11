@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="kr" layout:decorate="~{layouts/layout}">
+  <div layout:fragment="content">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title fw-semibold mb-4">도서 등록</h5>
+        <div class="card">
+          <div class="card-body">
+            <form
+              th:action="@{/board/register}"
+              th:object="${dto}"
+              method="post"
+            >
+              <div class="mb-3">
+                <label for="isbn" class="form-label">코드</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{isbn}"
+                  aria-describedby="isbn"
+                />
+                <div th:errors="*{isbn}" class="text-danger mt-2"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="title" class="form-label">제목</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{title}"
+                  aria-describedby="title"
+                />
+                <div th:errors="*{title}" class="text-danger mt-2"></div>
+              </div>
+
+              <div class="mb-3">
+                <label for="description" class="form-label">설명</label>
+                <textarea
+                  class="form-control"
+                  id="description"
+                  rows="5"
+                  th:field="*{description}"
+                  aria-describedby="description"
+                ></textarea>
+                <div th:errors="*{description}" class="text-danger mt-2"></div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="author" class="form-label">저자</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      th:field="*{author}"
+                      aria-describedby="author"
+                    />
+                    <div th:errors="*{author}" class="text-danger mt-2"></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <div class="mb-3">
+                    <label for="price" class="form-label">가격</label>
+                    <input
+                      type="number"
+                      class="form-control"
+                      th:field="*{price}"
+                      aria-describedby="price"
+                    />
+                    <div th:errors="*{price}" class="text-danger mt-2"></div>
+                  </div>
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary">등록</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+      const resultMessage = /*[[${msg}]]*/ "default";
+      if (resultMessage) {
+        Swal.fire({
+          title: resultMessage,
+          icon: "success",
+        });
+      }
+    </script>
+  </th:block>
+</html>

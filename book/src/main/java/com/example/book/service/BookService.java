@@ -15,6 +15,7 @@ import com.example.book.dto.BookDTO;
 import com.example.book.dto.PageRequestDTO;
 import com.example.book.entity.Book;
 import com.example.book.repository.BookRepository;
+import com.querydsl.core.types.Predicate;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -79,7 +80,8 @@ public class BookService {
     @Transactional(readOnly = true)
     public Page<BookDTO> readAll(PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.toPageable();
-        Page<Book> bookPage = bookRepository.findAll(pageable);
+        Predicate predicate = bookRepository.makePredicate(pageRequestDTO.getType(), pageRequestDTO.getKeyword());
+        Page<Book> bookPage = bookRepository.findAll(predicate, pageable);
         Page<BookDTO> dtoPage = bookPage.map(Book::toDTO);
 
         return dtoPage;

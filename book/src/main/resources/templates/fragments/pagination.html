@@ -1,78 +1,81 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-  <th:block th:fragment="paginationFragment(page)">
+  <th:block th:fragment="paginationFragment(result)">
     <nav
       aria-label="Page navigation"
-      th:if="${page != null and not #lists.isEmpty(page.pageNumList)}"
+      th:if="${result != null and not #lists.isEmpty(result.pageNumList)}"
       class="mt-3"
     >
       <ul class="pagination justify-content-center">
-        <li class="page-item" th:classappend="${page.prev} ? '' : 'disabled'">
+        <li class="page-item" th:classappend="${result.prev} ? '' : 'disabled'">
           <a
             class="page-link"
-            th:href="@{/book/list(page=1)}"
+            th:href="@{/book/list(
+       page=1, 
+       type=${result.pageRequestDTO.type}, 
+       keyword=${result.pageRequestDTO.keyword}
+      )}"
             aria-label="First"
             >&laquo;</a
           >
         </li>
-        <li class="page-item" th:classappend="${page.prev} ? '' : 'disabled'">
+
+        <li class="page-item" th:classappend="${result.prev} ? '' : 'disabled'">
           <a
             class="page-link"
-            th:href="@{/book/list(page=${page.prevPage})}"
+            th:href="@{/book/list(
+       page=${result.prevPage}, 
+       type=${result.pageRequestDTO.type}, 
+       keyword=${result.pageRequestDTO.keyword}
+      )}"
             aria-label="Previous"
             >&lt;</a
           >
         </li>
+
         <li
           class="page-item"
-          th:each="pageNum : ${page.pageNumList}"
-          th:classappend="${pageNum == page.current} ? active : ''"
+          th:each="pageNum : ${result.pageNumList}"
+          th:classappend="${pageNum == result.current} ? active : ''"
         >
           <a
             class="page-link"
-            th:href="@{/book/list(page=${pageNum})}"
+            th:href="@{/book/list(
+       page=${pageNum}, 
+       type=${result.pageRequestDTO.type}, 
+       keyword=${result.pageRequestDTO.keyword}
+      )}"
             th:text="${pageNum}"
             >1</a
           >
         </li>
-        <li class="page-item" th:classappend="${page.next} ? '' : 'disabled'">
+
+        <li class="page-item" th:classappend="${result.next} ? '' : 'disabled'">
           <a
             class="page-link"
-            th:href="@{/book/list(page=${page.nextPage})}"
+            th:href="@{/book/list(
+       page=${result.nextPage}, 
+       type=${result.pageRequestDTO.type}, 
+       keyword=${result.pageRequestDTO.keyword}
+      )}"
             aria-label="Next"
             >&gt;</a
           >
         </li>
-        <li class="page-item" th:classappend="${page.next} ? '' : 'disabled'">
+
+        <li class="page-item" th:classappend="${result.next} ? '' : 'disabled'">
           <a
             class="page-link"
-            th:href="@{/book/list(page=${page.totalPage})}"
+            th:href="@{/book/list(
+       page=${result.totalPage}, 
+       type=${result.pageRequestDTO.type}, 
+       keyword=${result.pageRequestDTO.keyword}
+      )}"
             aria-label="Last"
             >&raquo;</a
           >
         </li>
       </ul>
     </nav>
-    <!-- <div class="d-flex justify-content-center align-items-center mt-3">
-      <form th:action="@{/book/list}" method="get" class="d-flex">
-        <input
-          type="number"
-          th:value="${page.current}"
-          name="page"
-          class="form-control me-1"
-          style="width: 80px"
-          th:min="1"
-          th:max="${page.totalPage}"
-          required
-        />
-        <div class="me-2 d-flex align-items-center">
-          <span
-            th:text="| / ${page.totalPage}|"
-            style="font-weight: bold"
-          ></span>
-        </div>
-        <button type="submit" class="btn btn-primary btn-sm">이동</button>      
-      </form>
-    </div> -->
   </th:block>
 </html>

@@ -59,11 +59,15 @@
         </div>
 
         <div class="d-flex justify-content-between">
-          <a th:href="@{/book/list}" class="btn btn-secondary">목록으로</a>
+          <a
+            th:href="@{/book/list(page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword})}"
+            class="btn btn-secondary"
+            >목록으로</a
+          >
 
           <div>
             <a
-              th:href="@{/book/modify(id=${dto.id}, fromPage='read')}"
+              th:href="@{/book/modify(id=${dto.id}, page=${requestDTO.page}, , type=${requestDTO.type}, keyword=${requestDTO.keyword}, fromPage='read')}"
               class="btn btn-primary me-2"
               >수정</a
             >

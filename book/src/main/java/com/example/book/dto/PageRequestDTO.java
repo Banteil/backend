@@ -24,6 +24,10 @@ public class PageRequestDTO {
     private String direction = "DESC";
     @Builder.Default
     private String sort = "id";
+    @Builder.Default
+    private String type = null;
+    @Builder.Default
+    private String keyword = null;
 
     public Pageable toPageable() {
         // 1. 1-기반 페이지를 0-기반 인덱스로 변환 (page > 0 이도록 보장)
@@ -40,5 +44,17 @@ public class PageRequestDTO {
                 this.size,
                 Sort.by(sortDirection, this.sort) // 정렬 기준 적용
         );
+    }
+
+    public String getLinkParams() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("page=").append(this.page);
+        if (this.type != null && !this.type.isEmpty()) {
+            builder.append("&type=").append(this.type);
+        }
+        if (this.keyword != null && !this.keyword.isEmpty()) {
+            builder.append("&keyword=").append(this.keyword);
+        }
+        return builder.toString();
     }
 }
