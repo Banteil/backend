@@ -1,12 +1,15 @@
 package com.example.board.repository;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,17 @@ public class BoardRepositoryTest {
     private MemberRepository mR;
     @Autowired
     private ReplyRepository rR;
+
+    @Test
+    @Commit
+    public void insertGuestTest() {
+        Member m = Member.builder()
+                .email("guest")
+                .password("guest")
+                .name("손님")
+                .build();
+        mR.save(m);
+    }
 
     @Test
     @Commit
@@ -76,6 +90,49 @@ public class BoardRepositoryTest {
             rList.add(b);
         });
         rR.saveAll(rList);
+    }
+
+    @Test
+    @Transactional(readOnly = true)
+    public void readBoardTest() {
+        var list = bR.findAll();
+        list.forEach(b -> {
+            System.out.println(b);
+            System.out.println(b.getWriter());
+        });
+    }
+
+    @Test
+    public void getBoardWithWriterListTest() {
+        var result = bR.getBoardWithWriterList();
+        for (Object[] objects : result) {
+            System.out.println(Arrays.toString(objects));
+        }
+    }
+
+    @Test
+    public void getBoardWithReplyTest() {
+        // var board = bR.findById(30L).get();
+        // System.out.println(board);
+        // System.out.println(board.getReplies());
+        var result = bR.getBoardWithReply(30L);
+        for (Object[] objects : result) {
+            System.out.println(Arrays.toString(objects));
+        }
+    }
+
+    @Test
+    public void getBoardWithReplyCountTest() {
+        var pageable = PageRequest.of(0, 10, Sort.by("bno").descending());
+        var result = bR.getBoardWithReplyCount(pageable);
+        for (Object[] objects : result) {
+            var board = (Board) objects[0];
+            var member = (Member) objects[1];
+            var count = (Long) objects[2];
+            System.out.println(board);
+            System.out.println(member);
+            System.out.println("Reply Count : " + count);
+        }
     }
 
     @Test

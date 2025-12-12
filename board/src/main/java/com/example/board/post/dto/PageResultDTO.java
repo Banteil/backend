@@ -13,10 +13,10 @@ public class PageResultDTO<E> {
     private List<Integer> pageNumList;
     private PageRequestDTO pageRequestDTO;
     private boolean prev, next;
-    private int totalCount, prevPage, nextPage, totalPage, current;
+    private long totalCount, prevPage, nextPage, totalPage, current;
 
     @Builder(builderMethodName = "withAll")
-    public PageResultDTO(List<E> dtoList, PageRequestDTO pageRequestDTO, int totalCount) {
+    public PageResultDTO(List<E> dtoList, PageRequestDTO pageRequestDTO, long totalCount) {
         this.dtoList = dtoList;
         this.pageRequestDTO = pageRequestDTO;
         this.totalCount = totalCount;

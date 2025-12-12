@@ -1,7 +1,20 @@
 package com.example.board.post.controller;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.example.board.post.dto.BoardDTO;
+import com.example.board.post.dto.PageRequestDTO;
+import com.example.board.post.dto.PageResultDTO;
+import com.example.board.post.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -11,5 +24,87 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Controller
 public class PostController {
+    private final BoardService bS;
 
+    @GetMapping("/list")
+    public String getList(PageRequestDTO requestDTO, Model model) {
+        log.info("get list 호출 : {}", requestDTO);
+        PageResultDTO<BoardDTO> result = bS.getList(requestDTO);
+        model.addAttribute("result", result);
+        model.addAttribute("list", result.getDtoList());
+        model.addAttribute("requestDTO", requestDTO);
+        return "board/list";
+    }
+
+    @GetMapping("/read")
+    public String getRead(@RequestParam("bno") Long bno, PageRequestDTO requestDTO, Model model) {
+        log.info("read 호출: bno={}, requestDTO={}", bno, requestDTO);
+        try {
+            BoardDTO dto = bS.read(bno);
+            model.addAttribute("dto", dto);
+            model.addAttribute("requestDTO", requestDTO);
+            return "board/read";
+        } catch (NoSuchElementException e) {
+            log.error("게시글 조회 실패: {}", e.getMessage());
+            return "redirect:/board/list";
+        }
+    }
+
+    @GetMapping("/insert")
+    public String getInsert(Model model) {
+        log.info("insertForm 호출");
+        model.addAttribute("boardDTO", new BoardDTO());
+        return "board/insert";
+    }
+
+    @PostMapping("/insert")
+    public String postInsert(BoardDTO dto,
+            RedirectAttributes redirectAttributes) {
+        log.info("insertProcess 호출: dto={}", dto);
+        Long bno = bS.insert(dto);
+        redirectAttributes.addFlashAttribute("msg", "게시글 " + bno + "번이 성공적으로 등록되었습니다.");
+        return "redirect:/board/read?bno=" + bno;
+    }
+
+    @GetMapping("/modify")
+    public String getModify(@RequestParam("bno") Long bno,
+            @ModelAttribute PageRequestDTO requestDTO,
+            Model model) {
+        log.info("modifyForm 호출: bno={}, requestDTO={}", bno, requestDTO);
+        try {
+            BoardDTO dto = bS.read(bno);
+            model.addAttribute("dto", dto);
+            model.addAttribute("requestDTO", requestDTO);
+            return "board/modify";
+        } catch (NoSuchElementException e) {
+            log.error("수정할 게시글 조회 실패: {}", e.getMessage());
+            return "redirect:/board/list";
+        }
+    }
+
+    @PostMapping("/modify")
+    public String postModify(BoardDTO dto,
+            @ModelAttribute PageRequestDTO requestDTO,
+            RedirectAttributes redirectAttributes) {
+
+        log.info("modifyProcess 호출: dto={}, requestDTO={}", dto, requestDTO);
+        Long bno = bS.update(dto);
+        redirectAttributes.addFlashAttribute("msg", "게시글 " + bno + "번이 성공적으로 수정되었습니다.");
+        return "redirect:/board/read?" + requestDTO.getLinkParams() + "&bno=" + bno;
+    }
+
+    @PostMapping("/remove")
+    public String postRemove(@RequestParam("bno") Long bno,
+            RedirectAttributes redirectAttributes) {
+        log.info("removeProcess 호출: bno={}", bno);
+        try {
+            bS.remove(bno);
+            redirectAttributes.addFlashAttribute("msg", "게시글 " + bno + "번이 성공적으로 삭제되었습니다.");
+            return "redirect:/board/list";
+        } catch (NoSuchElementException e) {
+            log.error("삭제할 게시글을 찾을 수 없음: {}", e.getMessage());
+            redirectAttributes.addFlashAttribute("msg", "삭제하려는 게시글을 찾을 수 없습니다.");
+            return "redirect:/board/list";
+        }
+    }
 }

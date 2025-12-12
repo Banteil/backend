@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="kr" layout:decorate="~{layouts/layout}">
+  <div layout:fragment="content">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title fw-semibold mb-4">새 게시글 등록</h5>
+
+        <form
+          th:action="@{/board/insert}"
+          method="post"
+          th:object="${boardDTO}"
+          onsubmit="return confirm('새 게시글을 등록하시겠습니까?');"
+        >
+          <div class="mb-5 p-4 border rounded bg-light">
+            <div class="mb-3">
+              <label for="titleInput" class="form-label fw-bold">제목</label>
+              <input
+                type="text"
+                id="titleInput"
+                name="title"
+                class="form-control form-control-lg"
+                placeholder="제목을 입력하세요."
+                th:field="*{title}"
+                style="
+                  font-size: 1.5rem;
+                  color: #212529;
+                  border: 1px solid #ced4da;
+                  background-color: #fff;
+                "
+                required
+              />
+            </div>
+
+            <div class="mb-3">
+              <!-- <label for="writerEmailInput" class="form-label fw-bold"
+                >작성자 이메일</label
+              > -->
+              <input
+                type="hidden"
+                id="writerEmailInput"
+                name="writerEmail"
+                th:value="guest"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="contentInput" class="form-label fw-bold">내용</label>
+              <textarea
+                id="contentInput"
+                name="content"
+                class="form-control"
+                rows="15"
+                placeholder="내용을 입력하세요."
+                th:field="*{content}"
+                style="
+                  color: #212529;
+                  border: 1px solid #ced4da;
+                  background-color: #fff;
+                "
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-success me-2">
+              등록 완료
+            </button>
+
+            <a th:href="@{/board/list}" class="btn btn-secondary"
+              >취소 (목록으로)</a
+            >
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:inline="javascript">
+      // 등록 페이지에서는 별도의 메시지 알림 스크립트는 필요 없습니다.
+    </script>
+  </th:block>
+</html>

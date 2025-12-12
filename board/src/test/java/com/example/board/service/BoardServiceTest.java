@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.board.post.dto.BoardDTO;
 import com.example.board.post.dto.PageRequestDTO;
-import com.example.board.post.entity.Board;
 import com.example.board.post.repository.BoardRepository;
 import com.example.board.post.service.BoardService;
 
@@ -27,12 +27,9 @@ class BoardServiceTest {
 	public void getListTest() {
 		var dto = PageRequestDTO.builder().page(1).size(10).build();
 		var result = bS.getList(dto);
-		System.out.println(result.getContent());
-
-		List<Board> boards = result.getContent();
+		var boards = result.getDtoList();
 		boards.forEach(board -> {
 			System.out.println(board);
-			System.out.println(board.getWriter());
 		});
 	}
 }
