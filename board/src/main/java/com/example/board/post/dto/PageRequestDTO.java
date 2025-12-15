@@ -11,6 +11,11 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import com.example.board.member.entity.QMember;
+import com.example.board.post.entity.QBoard;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Predicate;
+
 @Data
 @SuperBuilder
 @AllArgsConstructor
@@ -45,5 +50,29 @@ public class PageRequestDTO {
             builder.append("&keyword=").append(this.keyword);
         }
         return builder.toString();
+    }
+
+    public Predicate createSearchPredicate() {
+        BooleanBuilder builder = new BooleanBuilder();
+        QBoard board = QBoard.board;
+        QMember member = QMember.member;
+
+        if (type != null && keyword != null && !keyword.trim().isEmpty()) {
+            String searchKeyword = "%" + keyword.trim() + "%";
+
+            BooleanBuilder searchBuilder = new BooleanBuilder();
+
+            if (type.contains("t")) {
+                searchBuilder.or(board.title.like(searchKeyword));
+            }
+            if (type.contains("c")) {
+                searchBuilder.or(board.content.like(searchKeyword));
+            }
+            if (type.contains("w")) {
+                searchBuilder.or(member.name.like(searchKeyword));
+            }
+            builder.and(searchBuilder);
+        }
+        return builder;
     }
 }

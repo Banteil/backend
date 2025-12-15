@@ -32,13 +32,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Memo {
-    //컬럼 : mno, memo_text, create_date, update_date
+    // 컬럼 : mno, memo_text, create_date, update_date
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="mno")
+    @Column(name = "mno")
     private Long id;
-    
-    @Column(nullable = false, name="memo_text")
+
+    @Column(nullable = false, name = "memo_text")
     private String text;
 
     @CreationTimestamp

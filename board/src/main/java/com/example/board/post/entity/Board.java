@@ -47,7 +47,7 @@ public class Board extends BaseEntity {
     @Column(nullable = false, length = 1500)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "email")
     private Member writer;
 

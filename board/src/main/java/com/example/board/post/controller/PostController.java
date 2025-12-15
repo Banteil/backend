@@ -4,6 +4,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,6 +17,7 @@ import com.example.board.post.dto.PageRequestDTO;
 import com.example.board.post.dto.PageResultDTO;
 import com.example.board.post.service.BoardService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -50,18 +52,25 @@ public class PostController {
         }
     }
 
-    @GetMapping("/insert")
-    public String getInsert(Model model) {
-        log.info("insertForm 호출");
+    @GetMapping("/register")
+    public String getRegister(Model model) {
+        log.info("registerForm 호출");
         model.addAttribute("boardDTO", new BoardDTO());
-        return "board/insert";
+        return "board/register";
     }
 
-    @PostMapping("/insert")
-    public String postInsert(BoardDTO dto,
-            RedirectAttributes redirectAttributes) {
-        log.info("insertProcess 호출: dto={}", dto);
-        Long bno = bS.insert(dto);
+    @PostMapping("/register")
+    public String postRegister(@Valid BoardDTO dto, BindingResult bindingResult,
+            RedirectAttributes redirectAttributes, Model model) {
+        log.info("registerProcess 호출: dto={}", dto);
+
+        if (bindingResult.hasErrors()) {
+            log.warn("유효성 검사 오류 발생: {}", bindingResult.getAllErrors());
+            model.addAttribute("boardDTO", dto);
+            return "board/register";
+        }
+
+        Long bno = bS.register(dto);
         redirectAttributes.addFlashAttribute("msg", "게시글 " + bno + "번이 성공적으로 등록되었습니다.");
         return "redirect:/board/read?bno=" + bno;
     }

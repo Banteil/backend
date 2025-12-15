@@ -34,37 +34,9 @@ public class BoardService {
     private final MemberRepository mR;
     private final ModelMapper mapper;
 
-    // 🔥 Predicate 생성 로직을 Service 내 private 메서드로 구현
-    private Predicate createSearchPredicate(PageRequestDTO dto) {
-        log.info("createSearchPredicate {}", dto);
-        BooleanBuilder builder = new BooleanBuilder();
-        QBoard board = QBoard.board;
-        QMember member = QMember.member;
-
-        String type = dto.getType();
-        String keyword = dto.getKeyword();
-
-        // 2. 검색 조건 적용 (기존 로직 그대로)
-        if (type != null && keyword != null && !keyword.trim().isEmpty()) {
-            String searchKeyword = "%" + keyword.trim() + "%";
-
-            BooleanBuilder searchBuilder = new BooleanBuilder();
-
-            if (type.contains("t")) {
-                searchBuilder.or(board.title.like(searchKeyword));
-            }
-            if (type.contains("a")) {
-                searchBuilder.or(member.name.like(searchKeyword));
-            }
-            builder.and(searchBuilder);
-        }
-
-        return builder;
-    }
-
     @Transactional(readOnly = true)
     public PageResultDTO<BoardDTO> getList(PageRequestDTO dto) {
-        Predicate predicate = createSearchPredicate(dto);
+        Predicate predicate = dto.createSearchPredicate();
         Page<BoardDTO> result = bR.getBoardPage(predicate, dto.toPageable());
         log.info("result {}", result.getContent());
         PageResultDTO<BoardDTO> pageResultDTO = PageResultDTO.<BoardDTO>withAll()
@@ -94,7 +66,7 @@ public class BoardService {
         return dto;
     }
 
-    public Long insert(BoardDTO dto) {
+    public Long register(BoardDTO dto) {
         Board board = mapper.map(dto, Board.class);
         board.setWriter(
                 mR.findByEmail(dto.getWriterEmail())

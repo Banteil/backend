@@ -42,7 +42,7 @@
             <p
               class="text-dark"
               style="white-space: pre-wrap"
-              th:text="${dto.content}"
+              th:utext="${dto.content}"
             >
               게시글 내용입니다.
             </p>
@@ -79,34 +79,9 @@
             </form>
           </div>
         </div>
-        <h5 class="card-title fw-semibold mb-3">
-          댓글 목록 (<span th:text="${dto.replyCount}">5</span>개)
-        </h5>
-
-        <div class="list-group">
-          <div
-            th:each="reply : ${dto.replies}"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-start"
-          >
-            <div class="ms-2 me-auto">
-              <div class="fw-bold" th:text="${reply.replayer}">댓글 작성자</div>
-              <small class="text-dark" th:text="${reply.text}"
-                >댓글 내용입니다.</small
-              >
-            </div>
-            <small
-              th:text="${#temporals.format(reply.createDateTime, 'yyyy-MM-dd HH:mm')}"
-              >2023-10-26 12:00</small
-            >
-          </div>
-
-          <div
-            th:if="${#lists.isEmpty(dto.replies)}"
-            class="list-group-item text-center text-muted"
-          >
-            등록된 댓글이 없습니다.
-          </div>
-        </div>
+        <div
+          th:replace="~{fragments/reply :: commentFragment(${dto}, ${requestDTO})}"
+        ></div>
       </div>
     </div>
   </div>
@@ -119,6 +94,27 @@
           icon: "success",
         });
       }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const modifyModal = document.getElementById("modifyModal");
+        if (modifyModal) {
+          modifyModal.addEventListener("show.bs.modal", function (event) {
+            // 모달을 트리거한 버튼
+            const button = event.relatedTarget;
+
+            // 버튼에서 data-* 속성 가져오기
+            const rno = button.getAttribute("data-rno");
+            const text = button.getAttribute("data-text");
+
+            // 모달의 폼 요소에 데이터 설정
+            const modalRno = modifyModal.querySelector("#modalRno");
+            const modalText = modifyModal.querySelector("#modalText");
+
+            if (modalRno) modalRno.value = rno;
+            if (modalText) modalText.value = text;
+          });
+        }
+      });
     </script>
   </th:block>
 </html>

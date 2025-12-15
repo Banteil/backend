@@ -42,7 +42,7 @@ public class Reply extends BaseEntity {
     private String replayer;
 
     // Board와 1:N 관계
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "bno")
     private Board board;
 }

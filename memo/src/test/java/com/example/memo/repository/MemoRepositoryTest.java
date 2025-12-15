@@ -11,38 +11,33 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.example.memo.entity.Memo;
 
-@Disabled //빌드 시점 시 실행X
 @SpringBootTest
 public class MemoRepositoryTest {
     @Autowired
     private MemoRepository memoRepository;
 
     @Test
-    public void readTest()
-    {
+    public void readTest() {
         Memo result = memoRepository.findById(1L).get();
         System.out.println(result.toString());
     }
 
     @Test
-    public void readAllTest()
-    {
+    public void readAllTest() {
         List<Memo> results = memoRepository.findAll();
         for (Memo memo : results) {
             System.out.println(memo.toString());
-        }        
+        }
     }
 
     @Test
-    public void deleteTest()
-    {
-        // studentRepository.delete(null);      
-        memoRepository.deleteById(2L);      
+    public void deleteTest() {
+        // studentRepository.delete(null);
+        memoRepository.deleteById(2L);
     }
 
     @Test
-    public void updateTest()
-    {
+    public void updateTest() {
         Optional<Memo> result = memoRepository.findById(1L);
 
         Memo memo = result.get();
@@ -50,27 +45,25 @@ public class MemoRepositoryTest {
         // insert(c), update(u) 작업 시 호출
         memoRepository.save(memo);
     }
-    
+
     @Test
-    public void insertTest()
-    {
+    public void insertTest() {
         Memo memo = Memo.builder()
-        .text("테스트")
-        .build();
+                .text("테스트")
+                .build();
 
         // insert(c), update(u) 작업 시 호출
         memoRepository.save(memo);
     }
 
     @Test
-    public void insertArrayTest()
-    {
+    public void insertArrayTest() {
         List<Memo> boardList = new ArrayList<>();
 
         for (int i = 1; i <= 100; i++) {
             Memo memo = Memo.builder()
-            .text("테스트 " + i)
-            .build();
+                    .text("테스트 " + i)
+                    .build();
             boardList.add(memo);
         }
 
