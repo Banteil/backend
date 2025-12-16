@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="css">
+    <style>
+      /* 필요 시 추가 스타일 */
+    </style>
+  </th:block>
+  <th:block layout:fragment="title">
+    <title>Memo List (REST)</title>
+  </th:block>
+  <div layout:fragment="content">
+    <h1 class="mb-4">📋 REST API 메모 목록</h1>
+
+    <div class="card shadow-sm">
+      <div class="card-header">전체 메모 (${/rest/list} 호출)</div>
+      <div class="card-body">
+        <table class="table table-hover table-striped">
+          <thead>
+            <tr>
+              <th style="width: 10%">ID</th>
+              <th style="width: 60%">내용</th>
+              <th style="width: 20%">작성일</th>
+              <th style="width: 10%">수정 여부</th>
+            </tr>
+          </thead>
+          <tbody id="memoListBody">
+            <tr>
+              <td colspan="4" class="text-center">로딩 중...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:src="@{/js/list.js}"></script>
+  </th:block>
+</html>

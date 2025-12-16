@@ -6,10 +6,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -44,7 +48,7 @@ public class ReplyController {
 
         try {
             Long rno = replyService.register(bno, dto);
-            redirectAttributes.addFlashAttribute("msg", "댓글 " + rno + "번이 성공적으로 등록되었습니다.");
+            redirectAttributes.addFlashAttribute("msg", "댓글이 성공적으로 등록되었습니다.");
         } catch (NoSuchElementException e) {
             log.error("댓글 등록 실패: {}", e.getMessage());
             redirectAttributes.addFlashAttribute("error", "댓글 등록 실패: 해당 게시글을 찾을 수 없습니다.");
@@ -99,5 +103,13 @@ public class ReplyController {
         }
 
         return "redirect:/board/read?bno=" + bno;
+    }
+
+    @GetMapping("/list/{bno}")
+    public String getReplyList(@PathVariable("bno") Long bno, Model model) {
+        log.info("댓글 목록 조각 요청: bno={}", bno);
+        List<ReplyDTO> replies = replyService.getList(bno);
+        model.addAttribute("replies", replies);
+        return "fragments/reply::replyList";
     }
 }

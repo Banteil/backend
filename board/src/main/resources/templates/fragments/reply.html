@@ -1,15 +1,10 @@
 <!DOCTYPE html>
 <html lang="kr" xmlns:th="http://www.thymeleaf.org">
   <div th:fragment="commentFragment(boardDTO, requestDTO)">
-    <h5 class="card-title fw-semibold mb-3">
-      댓글 목록 (<span th:text="${boardDTO.replyCount}">5</span>개)
-    </h5>
+    <h5 class="card-title fw-semibold mb-3">댓글 목록</h5>
+
     <div class="mb-4 p-3 border rounded bg-white shadow-sm">
-      <form
-        th:action="@{/reply/register}"
-        method="post"
-        onsubmit="return confirm('댓글을 등록하시겠습니까?');"
-      >
+      <form id="replyRegisterForm">
         <input type="hidden" name="bno" th:value="${boardDTO.bno}" />
         <div class="row g-2 mb-2">
           <div class="col-md-3">
@@ -17,7 +12,6 @@
               type="text"
               name="replayer"
               class="form-control"
-              placeholder="작성자 이름 (임시: Guest)"
               value="Guest"
               readonly
               required
@@ -39,86 +33,60 @@
       </form>
     </div>
 
-    <div class="list-group">
+    <div
+      class="list-group shadow-sm"
+      id="replyListArea"
+      th:fragment="replyList"
+    >
       <div
-        th:each="reply : ${boardDTO.replies}"
+        th:each="reply : ${replies}"
         class="list-group-item list-group-item-action"
       >
         <div class="d-flex justify-content-between align-items-start">
-          <div class="ms-2 me-auto w-100" th:id="|reply-content-${reply.rno}|">
-            <div class="fw-bold" th:text="${reply.replayer}">댓글 작성자</div>
-            <p
-              class="mb-1 text-dark small"
-              th:text="${reply.text}"
-              th:data-text="${reply.text}"
-            >
-              댓글 내용입니다.
-            </p>
+          <div class="ms-2 me-auto w-100">
+            <div class="fw-bold" th:text="${reply.replayer}">작성자</div>
+            <p class="mb-1 text-dark small" th:text="${reply.text}">내용</p>
           </div>
-
           <div class="text-end d-flex flex-column align-items-end">
             <small
               th:text="${#temporals.format(reply.createDateTime, 'yyyy-MM-dd HH:mm')}"
-              >2023-10-26 12:00</small
-            >
-
-            <div class="btn-group btn-group-sm mt-1" role="group">
+            ></small>
+            <div class="btn-group btn-group-sm mt-1">
               <button
                 type="button"
                 class="btn btn-outline-info btn-sm btn-modify-reply"
                 th:data-rno="${reply.rno}"
                 th:data-text="${reply.text}"
-                data-bs-toggle="modal"
-                data-bs-target="#modifyModal"
+                th:data-replayer="${reply.replayer}"
               >
                 수정
               </button>
-
-              <form
-                th:action="@{/reply/remove}"
-                method="post"
-                style="display: inline"
-                onsubmit="return confirm('정말로 댓글을 삭제하시겠습니까?');"
+              <button
+                type="button"
+                class="btn btn-outline-danger btn-sm"
+                th:onclick="|removeReply(${reply.rno})|"
               >
-                <input type="hidden" name="rno" th:value="${reply.rno}" />
-                <input type="hidden" name="bno" th:value="${boardDTO.bno}" />
-                <button type="submit" class="btn btn-outline-danger btn-sm">
-                  삭제
-                </button>
-              </form>
+                삭제
+              </button>
             </div>
           </div>
         </div>
       </div>
-
       <div
-        th:if="${#lists.isEmpty(boardDTO.replies)}"
+        th:if="${#lists.isEmpty(replies)}"
         class="list-group-item text-center text-muted"
       >
         등록된 댓글이 없습니다.
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      id="modifyModal"
-      tabindex="-1"
-      aria-labelledby="modifyModalLabel"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="modifyModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
-          <form th:action="@{/reply/modify}" method="post">
-            <input type="hidden" name="bno" th:value="${boardDTO.bno}" />
-            <input type="hidden" name="rno" id="modalRno" value="" />
-            <input
-              type="hidden"
-              name="replayer"
-              th:value="${boardDTO.writerName}"
-            />
-
+          <form id="replyModifyForm">
+            <input type="hidden" id="modalRno" value="" />
             <div class="modal-header">
-              <h5 class="modal-title" id="modifyModalLabel">댓글 수정</h5>
+              <h5 class="modal-title">댓글 수정</h5>
               <button
                 type="button"
                 class="btn-close"
@@ -133,7 +101,6 @@
                   type="text"
                   class="form-control"
                   id="modalText"
-                  name="text"
                   required
                 />
               </div>
@@ -152,5 +119,7 @@
         </div>
       </div>
     </div>
+
+    <script th:src="@{/assets/js/reply.js}"></script>
   </div>
 </html>

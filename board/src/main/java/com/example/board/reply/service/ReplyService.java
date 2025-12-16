@@ -3,6 +3,7 @@ package com.example.board.reply.service;
 import com.example.board.reply.dto.ReplyDTO;
 import com.example.board.reply.entity.Reply;
 import com.example.board.reply.repository.ReplyRepository;
+import com.example.board.post.dto.BoardDTO;
 import com.example.board.post.entity.Board; // Board 엔티티 임포트
 import com.example.board.post.repository.BoardRepository; // BoardRepository 임포트
 
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.modelmapper.ModelMapper; // DTO <=> Entity 변환을 위해 ModelMapper 사용 가정
 
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -55,5 +58,14 @@ public class ReplyService {
             throw new NoSuchElementException("댓글 " + rno + "번을 찾을 수 없습니다.");
         }
         replyRepository.deleteById(rno);
+    }
+
+    @Transactional
+    public List<ReplyDTO> getList(Long bno) {
+        List<Reply> result = replyRepository.findByBoardBnoOrderByCreateDateTimeAsc(bno);
+
+        return result.stream()
+                .map(reply -> modelMapper.map(reply, ReplyDTO.class))
+                .collect(Collectors.toList());
     }
 }

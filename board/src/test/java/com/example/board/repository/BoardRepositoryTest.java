@@ -78,13 +78,11 @@ public class BoardRepositoryTest {
     public void insertReplyTest() {
         List<Reply> rList = new ArrayList<>();
         IntStream.rangeClosed(1, 100).forEach(i -> {
-            int rand = (int) (Math.random() * 10) + 1;
             long randId = (long) (Math.random() * 100) + 1;
-            Member randM = mR.findById("user" + rand + "@gmail.com").get();
             Board randB = bR.findById(randId).get();
             Reply b = Reply.builder()
                     .text("reply text..." + i)
-                    .replayer(randM.getName())
+                    .replayer("손님")
                     .board(randB)
                     .build();
             rList.add(b);

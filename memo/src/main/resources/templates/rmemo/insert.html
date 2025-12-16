@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="css">
+    <style>
+      .text-danger {
+        color: #dc3545; /* 부트스트랩의 빨간색 */
+        font-weight: bold;
+        font-size: 0.9em;
+      }
+      #messageDisplay {
+        min-height: 20px; /* 메시지 표시 영역 확보 */
+      }
+    </style>
+  </th:block>
+  <th:block layout:fragment="title">
+    <title>REST Insert</title>
+  </th:block>
+  <div layout:fragment="content">
+    <h1 class="mb-4">📝 REST API 새 메모 작성</h1>
+
+    <form id="memoForm">
+      <div class="mb-3">
+        <label for="memoText" class="form-label">메모 내용</label>
+        <textarea
+          name="text"
+          class="form-control"
+          id="memoText"
+          rows="10"
+          placeholder="새로 작성할 메모 내용을 입력하세요"
+          required
+        ></textarea>
+
+        <div id="validationError" class="text-danger mt-2"></div>
+      </div>
+
+      <div id="messageDisplay" class="mb-3"></div>
+
+      <div class="d-flex justify-content-end">
+        <a th:href="@{/rmemo/list}" class="btn btn-secondary me-2"
+          >취소 / 목록</a
+        >
+        <button type="submit" class="btn btn-primary">저장 (POST)</button>
+      </div>
+    </form>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:src="@{/js/insert.js}"></script>
+  </th:block>
+</html>

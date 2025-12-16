@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/main_layout}"
+>
+  <th:block layout:fragment="css">
+    <style>
+      .card-text {
+        white-space: pre-wrap;
+      }
+      #memoContent {
+        min-height: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    </style>
+  </th:block>
+  <th:block layout:fragment="title">
+    <title>Read (REST)</title>
+  </th:block>
+  <div layout:fragment="content">
+    <h1 class="mb-4">📝 REST API 메모 상세 정보</h1>
+
+    <div id="memoContent">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="ms-2">메모 정보를 로딩 중입니다...</p>
+    </div>
+
+    <div class="mt-4 text-center">
+      <a href="/rmemo/list" class="btn btn-secondary me-2">목록으로</a>
+
+      <a id="modifyBtn" class="btn btn-warning me-2" style="display: none">
+        수정 (Modify)
+      </a>
+
+      <a
+        id="removeBtn"
+        class="btn btn-danger"
+        style="display: none; cursor: pointer"
+      >
+        삭제 (Remove)
+      </a>
+
+      <input type="hidden" id="memoIdData" value="" />
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:src="@{/js/read.js}"></script>
+  </th:block>
+</html>
