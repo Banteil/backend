@@ -110,6 +110,7 @@ public class ReplyController {
         log.info("댓글 목록 조각 요청: bno={}", bno);
         List<ReplyDTO> replies = replyService.getList(bno);
         model.addAttribute("replies", replies);
+        model.addAttribute("replyCount", replies.size());
         return "fragments/reply::replyList";
     }
 }

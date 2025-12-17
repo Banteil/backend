@@ -15,4 +15,6 @@ public interface SearchBoardRepository {
     List<Board> list();
 
     Page<BoardDTO> getBoardPage(Predicate predicate, Pageable pageable);
+
+    Object[] getBoardByBno(Long bno);
 }

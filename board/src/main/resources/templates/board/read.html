@@ -49,8 +49,7 @@
           </div>
 
           <div class="text-end text-muted small">
-            <span class="me-3">BNO: <span th:text="${dto.bno}">1</span></span>
-            <span>댓글 수: <span th:text="${dto.replyCount}">5</span></span>
+            <span>BNO: <span th:text="${dto.bno}">1</span></span>
           </div>
         </div>
         <div class="d-flex justify-content-between mb-5">
@@ -80,7 +79,7 @@
           </div>
         </div>
         <div
-          th:replace="~{fragments/reply :: commentFragment(${dto}, ${requestDTO})}"
+          th:replace="~{fragments/reply::commentFragment(${dto}, ${requestDTO})}"
         ></div>
       </div>
     </div>
@@ -94,27 +93,6 @@
           icon: "success",
         });
       }
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const modifyModal = document.getElementById("modifyModal");
-        if (modifyModal) {
-          modifyModal.addEventListener("show.bs.modal", function (event) {
-            // 모달을 트리거한 버튼
-            const button = event.relatedTarget;
-
-            // 버튼에서 data-* 속성 가져오기
-            const rno = button.getAttribute("data-rno");
-            const text = button.getAttribute("data-text");
-
-            // 모달의 폼 요소에 데이터 설정
-            const modalRno = modifyModal.querySelector("#modalRno");
-            const modalText = modifyModal.querySelector("#modalText");
-
-            if (modalRno) modalRno.value = rno;
-            if (modalText) modalText.value = text;
-          });
-        }
-      });
     </script>
   </th:block>
 </html>

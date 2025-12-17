@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((res) => res.text()) // JSON이 아닌 TEXT(HTML)로 받음
       .then((html) => {
         const listArea = document.getElementById("replyListArea");
-        listArea.innerHTML = html; // 받은 HTML 조각을 그대로 삽입
+        listArea.replaceWith(new Range().createContextualFragment(html)); // 받은 HTML 조각을 그대로 삽입
         addModifyEvents(); // 새로 생긴 버튼들에 이벤트 바인딩
       });
   }
@@ -23,6 +23,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const rno = this.getAttribute("data-rno");
         const text = this.getAttribute("data-text");
         const replayer = this.getAttribute("data-replayer");
+        console.log("rno : " + rno);
 
         document.getElementById("modalRno").value = rno;
         document.getElementById("modalText").value = text;
@@ -73,6 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // 삭제 처리
   window.removeReply = function (rno) {
+    console.log("rno : " + rno);
     if (!confirm("삭제하시겠습니까?")) return;
     fetch(`/replies/${rno}`, { method: "DELETE" }).then((res) => {
       if (res.ok) loadReplies(); // 삭제 후 목록 갱신

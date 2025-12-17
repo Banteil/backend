@@ -1,6 +1,4 @@
 $(function () {
-
-
   // -----------------------------------------------------------------------
   // sales overview
   // -----------------------------------------------------------------------
@@ -79,11 +77,18 @@ $(function () {
     },
   };
 
-  var chart_column_basic = new ApexCharts(
-    document.querySelector("#sales-overview"),
-    options_sales_overview
-  );
-  chart_column_basic.render();
+  const salesOverviewElem = document.querySelector("#sales-overview");
 
-
-})
+  // 🌟 [수정 포인트] 요소가 존재할 때만 차트를 생성하고 렌더링합니다.
+  if (salesOverviewElem) {
+    var chart_column_basic = new ApexCharts(
+      salesOverviewElem, // 위에서 찾은 변수 사용
+      options_sales_overview
+    );
+    chart_column_basic.render();
+    console.log("차트 렌더링 완료");
+  } else {
+    // 요소가 없어도 에러를 던지지 않고 그냥 조용히 넘어갑니다.
+    console.log("차트 요소를 찾을 수 없어 렌더링을 건너뜁니다.");
+  }
+});

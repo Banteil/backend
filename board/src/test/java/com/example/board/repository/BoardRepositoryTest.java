@@ -145,4 +145,10 @@ public class BoardRepositoryTest {
             System.out.println(board.getWriter()); // 추가 쿼리 없이 writer 정보 접근 가능
         });
     }
+
+    @Test
+    public void getBoardByBnoTest() {
+        var result = bR.getBoardByBno(105L);
+        System.out.println(Arrays.toString(result));
+    }
 }
