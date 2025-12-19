@@ -12,8 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.club.entity.Member;
 import com.example.club.entity.constant.ClubMemberRole;
 
-import jakarta.transaction.Transactional;
-
 @SpringBootTest
 public class MemberRepositoryTest {
     @Autowired

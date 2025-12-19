@@ -25,30 +25,40 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	// querydsl
-	implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
-	implementation 'com.querydsl:querydsl-apt:5.1.0:jakarta'
-	implementation 'com.querydsl:querydsl-core:5.1.0'
-	annotationProcessor 'com.querydsl:querydsl-apt:5.1.0:jakarta'
-	annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-	annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-	
-	implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.4.0'
-	implementation 'com.oracle.database.jdbc:ojdbc11:23.26.0.0.0'
-	implementation 'org.modelmapper:modelmapper:3.2.6'
+    // 1. Core Starters
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    
+    // 2. Security OAuth2 (버전 명시 제거 - 부트가 알아서 맞춤)
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    // 3. Thymeleaf Extensions
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect' // 버전 제거 권장
+
+    // 4. Utils
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.modelmapper:modelmapper:3.2.1' // 최신 안정 버전
+
+    // 5. Database (사용하는 것 하나만 선택하세요)
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    // implementation 'com.oracle.database.jdbc:ojdbc11' 
+
+    // 6. QueryDSL (Jakarta 대응)
+    implementation 'com.querydsl:querydsl-jpa:5.1.0:jakarta'
+    annotationProcessor "com.querydsl:querydsl-apt:5.1.0:jakarta"
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+    // 7. Dev & Test
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 tasks.withType(Test) {

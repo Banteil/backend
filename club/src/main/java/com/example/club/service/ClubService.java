@@ -30,5 +30,4 @@ public class ClubService implements UserDetailsService {
 
         return new MemberDTO(member);
     }
-
 }

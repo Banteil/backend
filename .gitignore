@@ -5,6 +5,7 @@
 ### 각 프로젝트에 생성되는 gitignore 제거 ###
 **/.gitignore
 **/.gitattributes
+**/application-oauth.properties
 
 ### Java ###
 # Compiled class file

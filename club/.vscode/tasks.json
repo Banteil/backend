@@ -1,0 +1,24 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "gradle",
+      "id": "c:\\git\\backend\\clubbuildclub",
+      "script": "build",
+      "description": "Assembles and tests this project.",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "project": "club",
+      "buildFile": "C:\\git\\backend\\club\\build.gradle",
+      "rootProject": "club",
+      "projectFolder": "c:\\git\\backend\\club",
+      "workspaceFolder": "c:\\git\\backend\\club",
+      "args": "",
+      "javaDebug": false,
+      "problemMatcher": ["$gradle"],
+      "label": "gradle: build"
+    }
+  ]
+}

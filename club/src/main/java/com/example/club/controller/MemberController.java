@@ -14,19 +14,21 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Controller
 public class MemberController {
-    @GetMapping("/guest")
-    public void getGuest() {
-        log.info("guest 요청");
+    @GetMapping("/profile")
+    public void getProfile() {
+        log.info("proflie 요청");
     }
 
-    @GetMapping("/member")
-    public void getMember() {
-        log.info("member 요청");
+    @GetMapping("/manager")
+    public String getManager() {
+        log.info("manager 요청");
+        return "/manager/info";
     }
 
     @GetMapping("/admin")
-    public void getAdmin() {
+    public String getAdmin() {
         log.info("admin 요청");
+        return "/admin/manage";
     }
 
     @GetMapping("/login")

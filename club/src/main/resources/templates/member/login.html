@@ -48,10 +48,14 @@
     </form>
 
     <div class="d-flex align-items-center justify-content-center">
-      <p class="fs-4 mb-0 fw-bold">New to MaterialM?</p>
-      <a class="text-primary fw-bold ms-2" th:href="@{member/register}"
-        >Create an account</a
-      >
+      <a
+        class="text-primary fw-bold ms-2"
+        th:href="@{/oauth2/authorization/google}"
+        ><img
+          th:src="@{/assets/images/logos/google-logo.png}"
+          alt="Google Logo"
+          style="width: 30px; height: auto"
+      /></a>
     </div>
   </div>
   <th:block layout:fragment="script">
