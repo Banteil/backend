@@ -10,10 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.board.member.entity.Member;
+import com.example.board.member.entity.constant.MemberRole;
 import com.example.board.member.repository.MemberRepository;
 import com.example.board.post.entity.Board;
 import com.example.board.post.repository.BoardRepository;
@@ -29,6 +31,8 @@ public class BoardRepositoryTest {
     private MemberRepository mR;
     @Autowired
     private ReplyRepository rR;
+    @Autowired
+    private PasswordEncoder pE;
 
     @Test
     @Commit
@@ -37,7 +41,9 @@ public class BoardRepositoryTest {
                 .email("guest")
                 .password("guest")
                 .name("손님")
+                .fromSocial(false)
                 .build();
+        m.addMemberRole(MemberRole.USER);
         mR.save(m);
     }
 
@@ -48,9 +54,17 @@ public class BoardRepositoryTest {
         IntStream.rangeClosed(1, 10).forEach(i -> {
             Member m = Member.builder()
                     .email("user" + i + "@gmail.com")
-                    .password("1111")
+                    .password(pE.encode("1111"))
                     .name("user" + i)
+                    .fromSocial(false)
                     .build();
+            m.addMemberRole(MemberRole.USER);
+            if (i > 8) {
+                m.addMemberRole(MemberRole.MANAGER);
+            }
+            if (i > 9) {
+                m.addMemberRole(MemberRole.ADMIN);
+            }
             mList.add(m);
         });
         mR.saveAll(mList);

@@ -2,6 +2,7 @@ package com.example.board.post.controller;
 
 import java.util.NoSuchElementException;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -91,6 +92,7 @@ public class PostController {
         }
     }
 
+    // @PreAuthorize("authentication.name == #dto.writerEmail")
     @PostMapping("/modify")
     public String postModify(BoardDTO dto,
             @ModelAttribute PageRequestDTO requestDTO,

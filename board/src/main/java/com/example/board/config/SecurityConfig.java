@@ -1,8 +1,9 @@
-package com.example.club.config;
+package com.example.board.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
@@ -14,18 +15,19 @@ import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices.RememberMeTokenAlgorithm;
 
-import com.example.club.handler.LoginSuccessHandler;
-import com.example.club.service.ClubOauth2Service;
+import com.example.board.member.handler.LoginSuccessHandler;
+import com.example.board.member.service.MemberOauth2Service;
 import lombok.extern.log4j.Log4j2;
 
+@EnableMethodSecurity
 @EnableWebSecurity // 모든 웹 요청에 대해 Securty Filter Chain 적용
 @Log4j2
 @Configuration // 스프링 설정 클래스
 public class SecurityConfig {
 
-    private final ClubOauth2Service clubOauth2Service;
+    private final MemberOauth2Service clubOauth2Service;
 
-    SecurityConfig(ClubOauth2Service clubOauth2Service) {
+    SecurityConfig(MemberOauth2Service clubOauth2Service) {
         this.clubOauth2Service = clubOauth2Service;
     }
 
@@ -33,12 +35,9 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
         http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/", "member/auth", "member/register", "/css/**", "/js/**", "/images/**", "/fonts/**",
-                        "/assets/**")
-                .permitAll()
                 .requestMatchers("/member/manager").hasAnyRole("MANAGER", "ADMIN")
                 .requestMatchers("/member/admin").hasRole("ADMIN")
-                .anyRequest().authenticated())
+                .anyRequest().permitAll())
                 // .httpBasic(Customizer.withDefaults()); //http basic인증을 사용
                 .formLogin(login -> login.loginPage("/member/login").loginProcessingUrl("/member/login")
                         .successHandler(loginSuccessHandler()).permitAll())
@@ -79,9 +78,6 @@ public class SecurityConfig {
 
     @Bean
     PasswordEncoder passwordEncoder() {
-        // 운영, 실무, 여러 암호화 알고리즘 사용
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        // 연습, 단일 알고리즘 사용
-        // return new BCryptPasswordEncoder();
     }
 }

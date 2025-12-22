@@ -1,4 +1,4 @@
-package com.example.club.controller;
+package com.example.board.member.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.example.club.dto.MemberRegisterDTO;
-import com.example.club.service.ClubService;
+import com.example.board.member.dto.MemberRegisterDTO;
+import com.example.board.member.service.MemberService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import lombok.extern.log4j.Log4j2;
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
-    private final ClubService cS;
+    private final MemberService mS;
 
     @GetMapping("/profile")
     public void getProfile() {
@@ -73,7 +73,7 @@ public class MemberController {
             return ResponseEntity.badRequest().body(errorMsg);
         }
         try {
-            String email = cS.register(dto);
+            String email = mS.register(dto);
             return ResponseEntity.ok(email);
         } catch (Exception e) {
             log.error("가입 실패: " + e.getMessage());

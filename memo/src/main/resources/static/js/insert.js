@@ -67,7 +67,6 @@ form.addEventListener("submit", (e) => {
       console.log("메모 수정 완료:", updatedDto);
 
       if (updatedDto && updatedDto.id) {
-        // SweetAlert2 표시
         Swal.fire({
           title: "메모 수정 완료",
           text: `ID ${updatedDto.id}번 메모가 수정되었습니다.`,

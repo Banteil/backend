@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.example.board.reply.entity.Reply;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +22,9 @@ public class ReplyDTO {
     private String text;
     @NotBlank(message = "작성자명은 필수 항목입니다.")
     private String replayer;
+    private String replayerEmail;
+    @Size(min = 4, max = 16, message = "비밀번호는 4자 이상, 16자 이하로 입력해주세요.")
+    private String password;
     private Long bno;
     private LocalDateTime createDateTime;
     private LocalDateTime updateDateTime;

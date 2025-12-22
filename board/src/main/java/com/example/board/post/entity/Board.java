@@ -51,6 +51,9 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "email")
     private Member writer;
 
+    @Column(length = 20)
+    private String password;
+
     @Builder.Default
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();

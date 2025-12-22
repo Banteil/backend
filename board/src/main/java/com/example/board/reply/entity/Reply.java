@@ -40,6 +40,8 @@ public class Reply extends BaseEntity {
     private String text;
 
     private String replayer;
+    private String replayerEmail;
+    private String password;
 
     // Board와 1:N 관계
     @ManyToOne(fetch = FetchType.LAZY, optional = false)

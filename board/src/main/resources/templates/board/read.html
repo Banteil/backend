@@ -59,24 +59,87 @@
             >목록으로</a
           >
 
-          <div>
-            <a
-              th:href="@{/board/modify(bno=${dto.bno}, page=${requestDTO.page}, type=${requestDTO.type}, keyword=${requestDTO.keyword}, fromPage='read')}"
-              class="btn btn-primary me-2"
-              >수정</a
+          <div
+            id="actionBtnArea"
+            th:with="currentUser=${#authentication.principal}"
+          >
+            <th:block
+              th:if="${dto.writerEmail == 'guest' or (currentUser != 'anonymousUser' and (currentUser.username == dto.writerEmail or #authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')')))}"
             >
+              <button
+                type="button"
+                class="btn btn-primary me-2 btn-modify"
+                th:data-bno="${dto.bno}"
+                th:data-guest="${dto.writerEmail == 'guest'}"
+                th:data-pw="${dto.password}"
+                th:data-role="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')') ? 'ADMIN' : 'USER'}"
+              >
+                수정
+              </button>
 
-            <form
-              th:action="@{/board/remove}"
-              method="post"
-              style="display: inline"
-              th:data-boardtitle="${dto.title}"
-              onsubmit="return confirm('정말로 게시글 ' + this.getAttribute('data-boardtitle') + '을(를) 삭제하시겠습니까?');"
-            >
-              <input type="hidden" name="bno" th:value="${dto.bno}" />
-              <button type="submit" class="btn btn-danger">삭제</button>
-            </form>
+              <button
+                type="button"
+                class="btn btn-danger btn-remove"
+                th:data-bno="${dto.bno}"
+                th:data-guest="${dto.writerEmail == 'guest'}"
+                th:data-pw="${dto.password}"
+                th:data-role="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')') ? 'ADMIN' : 'USER'}"
+              >
+                삭제
+              </button>
+            </th:block>
           </div>
+
+          <div
+            class="modal fade"
+            id="passwordModal"
+            tabindex="-1"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">비밀번호 확인</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p class="small text-muted">
+                    게시글 작성 시 설정한 비밀번호를 입력하세요.
+                  </p>
+                  <input
+                    type="password"
+                    id="guestPassword"
+                    class="form-control"
+                    placeholder="Password"
+                  />
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-primary w-100"
+                    id="btnConfirmPw"
+                  >
+                    확인
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form
+            id="removeForm"
+            th:action="@{/board/remove}"
+            method="post"
+            style="display: none"
+          >
+            <input type="hidden" name="bno" th:value="${dto.bno}" />
+            <input type="hidden" name="password" id="removePassword" />
+          </form>
         </div>
         <div
           th:replace="~{fragments/reply::commentFragment(${dto}, ${requestDTO})}"
@@ -94,5 +157,6 @@
         });
       }
     </script>
+    <script th:src="@{/assets/js/board-read.js}"></script>
   </th:block>
 </html>

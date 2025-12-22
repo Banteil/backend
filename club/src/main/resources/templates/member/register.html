@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="kr" layout:decorate="~{layouts/layout}">
+  <div layout:fragment="content">
+    <h2>REGISTER</h2>
+    <form id="registerForm">
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          id="email"
+          placeholder="email"
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          name="password"
+          class="form-control"
+          id="password"
+          placeholder="password"
+          required
+        />
+      </div>
+      <div class="mb-4">
+        <label for="name" class="form-label">Name</label>
+        <input
+          type="text"
+          name="name"
+          class="form-control"
+          id="name"
+          placeholder="name"
+          required
+        />
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary w-100 py-8 fs-4 mb-4 rounded-2"
+      >
+        Register
+      </button>
+    </form>
+  </div>
+  <th:block layout:fragment="script">
+    <script th:src="@{/js/register.js}"></script>
+  </th:block>
+</html>

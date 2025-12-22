@@ -39,9 +39,6 @@ public class ReplyController {
 
         if (bindingResult.hasErrors()) {
             log.warn("댓글 유효성 검사 오류 발생");
-            // 오류 발생 시 게시글 상세 페이지로 돌아가며 오류 메시지를 전달
-            // View에서 JQuery/AJAX를 사용한다면 JSON 응답이 더 적합하지만,
-            // 현재는 폼 제출 방식이므로 리다이렉트를 사용합니다.
             redirectAttributes.addFlashAttribute("replyError", "댓글 내용을 모두 입력해주세요.");
             return "redirect:/board/read?bno=" + bno;
         }

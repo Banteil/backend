@@ -38,15 +38,54 @@
             </div>
 
             <div class="mb-3">
-              <!-- <label for="writerEmailInput" class="form-label fw-bold"
-                >작성자 이메일</label
-              > -->
+              <th:block sec:authorize="isAuthenticated()">
+                <input
+                  type="hidden"
+                  id="writerEmailInput"
+                  name="writerEmail"
+                  th:value="${#authentication.principal.username}"
+                />
+              </th:block>
+
+              <th:block sec:authorize="isAnonymous()">
+                <input
+                  type="hidden"
+                  id="writerEmailInput"
+                  name="writerEmail"
+                  th:value="guest"
+                />
+              </th:block>
+            </div>
+
+            <div class="mb-3" sec:authorize="isAnonymous()">
+              <label for="passwordInput" class="form-label fw-bold"
+                >게시글 비밀번호</label
+              >
               <input
-                type="hidden"
-                id="writerEmailInput"
-                name="writerEmail"
-                th:value="guest"
+                type="password"
+                id="passwordInput"
+                name="password"
+                class="form-control"
+                placeholder="비밀번호 4~16자를 입력하세요."
+                th:field="*{password}"
+                style="
+                  color: #212529;
+                  border: 1px solid #ced4da;
+                  background-color: #fff;
+                "
+                required
               />
+              <div
+                class="text-danger small mt-1"
+                th:if="${#fields.hasErrors('password')}"
+              >
+                <span th:errors="*{password}"
+                  >비밀번호 형식이 올바르지 않습니다.</span
+                >
+              </div>
+              <div class="form-text text-muted">
+                비로그인 작성 시 게시글 수정/삭제를 위해 필요합니다.
+              </div>
             </div>
 
             <div class="mb-3">

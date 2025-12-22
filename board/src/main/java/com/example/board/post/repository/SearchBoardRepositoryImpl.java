@@ -17,7 +17,6 @@ import com.example.board.reply.entity.QReply;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 
 import lombok.extern.log4j.Log4j2;
@@ -67,6 +66,7 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
                                                                 board.bno,
                                                                 board.title,
                                                                 board.content,
+                                                                board.password,
                                                                 board.writer.name, // Member 엔티티의 name (writerName)
                                                                 board.writer.email, // Member 엔티티의 email (writerEmail)
 
@@ -85,6 +85,7 @@ public class SearchBoardRepositoryImpl extends QuerydslRepositorySupport impleme
                                                 board.bno,
                                                 board.title,
                                                 board.content,
+                                                board.password,
                                                 board.writer.name,
                                                 board.writer.email,
                                                 board.createDateTime,

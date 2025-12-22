@@ -3,6 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title>Board</title>
     <link
       rel="shortcut icon"
@@ -10,6 +12,20 @@
       th:href="@{/assets/images/logos/favicon.png}"
     />
     <link rel="stylesheet" th:href="@{/assets/css/styles.min.css}" />
+    <style>
+      input,
+      textarea,
+      select,
+      input.form-control {
+        color: #000000 !important;
+      }
+      input::placeholder {
+        color: #6c757d;
+      }
+      input:focus {
+        color: #000000 !important;
+      }
+    </style>
     <th:block layout:fragment="css">
       <!-- 페이지별 개별 css 작성 -->
     </th:block>
@@ -56,6 +72,7 @@
         </div>
       </div>
     </div>
+    <form th:action="@{/member/logout}" method="post" id="logoutForm"></form>
     <script th:src="@{/assets/libs/jquery/dist/jquery.min.js}"></script>
     <script
       th:src="@{/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js}"
@@ -68,6 +85,19 @@
     <!-- solar icons -->
     <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      (function () {
+        // 즉시 실행 함수로 감싸서 변수 충돌 방지
+        const logoutButtons = document.querySelectorAll(".logout-btn");
+        logoutButtons.forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const logoutForm = document.querySelector("#logoutForm");
+            if (logoutForm) logoutForm.submit();
+          });
+        });
+      })();
+    </script>
     <th:block layout:fragment="script">
       <!-- 페이지별 개별 js 작성 -->
     </th:block>
