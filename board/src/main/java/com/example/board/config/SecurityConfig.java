@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,22 +34,42 @@ public class SecurityConfig {
 
     // 시큐리티 설정 클래스
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices) throws Exception {
-        http.authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/member/manager").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/member/admin").hasRole("ADMIN")
-                .anyRequest().permitAll())
-                // .httpBasic(Customizer.withDefaults()); //http basic인증을 사용
-                .formLogin(login -> login.loginPage("/member/login").loginProcessingUrl("/member/login")
-                        .successHandler(loginSuccessHandler()).permitAll())
-                .oauth2Login(oauth2 -> oauth2
-                        .loginPage("/member/login")
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(clubOauth2Service)))
-                .logout(logout -> logout.logoutUrl("/member/logout").logoutSuccessUrl("/")
-                        .invalidateHttpSession(true).deleteCookies("JSESSIONID"))
-                .rememberMe(remember -> remember.rememberMeServices(rememberMeServices));
-        // 사이트 form 인증을 사용
+    SecurityFilterChain securityFilterChain(HttpSecurity http, RememberMeServices rememberMeServices)
+            throws Exception {
+
+        // 1. 인가 설정 (Authorization)
+        http.authorizeHttpRequests(auth -> auth
+                .anyRequest().permitAll() // 나머지 모든 요청 허용 (메서드 보안 @PreAuthorize 활용 권장)
+        );
+
+        // 2. 폼 로그인 설정 (Form Login)
+        http.formLogin(login -> login
+                .loginPage("/member/login")
+                .loginProcessingUrl("/member/login")
+                .successHandler(loginSuccessHandler())
+                .permitAll());
+
+        // 3. OAuth2 로그인 설정 (Social Login)
+        http.oauth2Login(oauth2 -> oauth2
+                .loginPage("/member/login")
+                .userInfoEndpoint(userInfo -> userInfo.userService(clubOauth2Service)));
+
+        // 4. 로그아웃 설정 (Logout)
+        http.logout(logout -> logout
+                .logoutUrl("/member/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID", "remember-me") // 리멤버미 쿠키도 함께 삭제 권장
+        );
+
+        http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
+
+        // 5. 자동 로그인 설정 (Remember-Me)
+        http.rememberMe(remember -> remember
+                .rememberMeServices(rememberMeServices));
+
+        // 6. CSRF 설정 (필요 시 추가)
+        // http.csrf(csrf -> csrf.disable()); // REST API 중심이라면 검토
 
         return http.build();
     }

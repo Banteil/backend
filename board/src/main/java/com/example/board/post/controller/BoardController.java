@@ -2,7 +2,6 @@ package com.example.board.post.controller;
 
 import java.util.NoSuchElementException;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,7 +25,7 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/board")
 @Log4j2
 @Controller
-public class PostController {
+public class BoardController {
     private final BoardService bS;
 
     @GetMapping("/list")

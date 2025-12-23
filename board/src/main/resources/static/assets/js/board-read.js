@@ -1,71 +1,54 @@
-// assets/js/board-read.js
-
 document.addEventListener("DOMContentLoaded", function () {
-  const passwordModalElem = document.getElementById("passwordModal");
-  const passwordModal = passwordModalElem
-    ? new bootstrap.Modal(passwordModalElem)
-    : null;
-  const guestPwInput = document.getElementById("guestPassword");
-  const confirmBtn = document.getElementById("btnConfirmPw");
-
-  let currentBno = "";
-  let currentBoardPw = "";
-  let actionType = "";
-
   document
     .getElementById("actionBtnArea")
     ?.addEventListener("click", function (e) {
       const btn = e.target.closest("button");
       if (!btn) return;
 
-      currentBno = btn.getAttribute("data-bno");
-      currentBoardPw = btn.getAttribute("data-pw");
+      const currentBno = btn.getAttribute("data-bno");
       const isGuest = btn.getAttribute("data-guest") === "true";
-      const isAdmin = btn.getAttribute("data-role") === "ADMIN"; // 🌟 관리자 여부 확인
+      const isAdmin = btn.getAttribute("data-role") === "ADMIN";
 
-      // 🌟 수정 로직 분기
+      // 🌟 수정 로직
       if (btn.classList.contains("btn-modify")) {
-        // 관리자거나 로그인을 한 본인인 경우 (isGuest가 아님) 바로 이동
         if (isAdmin || !isGuest) {
           location.href = `/board/modify?bno=${currentBno}`;
         } else {
-          // Guest인 경우에만 모달 띄움
-          actionType = "modify";
-          passwordModal.show();
+          // 확장된 authUtils 호출 방식
+          authUtils.verifyPassword({
+            url: "/board/check-password",
+            idValue: currentBno,
+            idKey: "bno",
+            successCallback: (validPw) => {
+              location.href = `/board/modify?bno=${currentBno}&password=${validPw}`;
+            },
+          });
         }
       }
 
-      // 🌟 삭제 로직 분기
+      // 🌟 삭제 로직
       else if (btn.classList.contains("btn-remove")) {
-        if (isAdmin || !isGuest) {
+        const performRemove = (inputPw) => {
           if (confirm("정말로 삭제하시겠습니까?")) {
-            document.getElementById("removeForm").submit();
+            const removeForm = document.getElementById("removeForm");
+            if (inputPw)
+              document.getElementById("removePassword").value = inputPw;
+            removeForm.submit();
           }
+        };
+
+        if (isAdmin || !isGuest) {
+          performRemove();
         } else {
-          // Guest인 경우에만 모달 띄움
-          actionType = "remove";
-          passwordModal.show();
+          authUtils.verifyPassword({
+            url: "/board/check-password",
+            idValue: currentBno,
+            idKey: "bno",
+            successCallback: (validPw) => {
+              performRemove(validPw);
+            },
+          });
         }
       }
     });
-
-  // 모달 확인 버튼 로직은 동일
-  confirmBtn?.addEventListener("click", function () {
-    const inputPw = guestPwInput.value;
-    if (inputPw === currentBoardPw) {
-      if (actionType === "modify") {
-        location.href = `/board/modify?bno=${currentBno}&password=${inputPw}`;
-      } else if (actionType === "remove") {
-        document.getElementById("removePassword").value = inputPw;
-        document.getElementById("removeForm").submit();
-      }
-      passwordModal.hide();
-    } else {
-      alert("비밀번호가 일치하지 않습니다.");
-    }
-  });
-
-  passwordModalElem?.addEventListener("hidden.bs.modal", function () {
-    guestPwInput.value = "";
-  });
 });

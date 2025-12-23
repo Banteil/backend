@@ -1,6 +1,7 @@
 package com.example.board.reply.controller;
 
 import com.example.board.reply.dto.ReplyDTO;
+import com.example.board.reply.repository.ReplyRepository;
 import com.example.board.reply.service.ReplyService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import java.util.NoSuchElementException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 public class ReplyRestController {
 
+    private final ReplyRepository replyRepository;
     private final ReplyService replyService;
+    private final PasswordEncoder passwordEncoder;
 
     // =========================================================
     // 1. 댓글 등록 처리 (POST /replies)
@@ -98,5 +102,19 @@ public class ReplyRestController {
         log.info("댓글 목록 조회: bno={}", bno);
         List<ReplyDTO> replies = replyService.getList(bno); // 서비스에서 목록 조회
         return ResponseEntity.ok(replies);
+    }
+
+    @PostMapping("/check-password")
+    public ResponseEntity<Boolean> checkPassword(@RequestBody Map<String, Object> data) {
+        // JS에서 보낸 idKey인 'rno'로 값을 추출
+        Long rno = Long.parseLong(data.get("rno").toString());
+        String inputPw = data.get("password").toString();
+
+        return replyRepository.findById(rno)
+                .map(reply -> {
+                    boolean isMatch = passwordEncoder.matches(inputPw, reply.getPassword());
+                    return ResponseEntity.ok(isMatch);
+                })
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).body(false));
     }
 }

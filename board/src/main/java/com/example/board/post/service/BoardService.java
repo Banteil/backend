@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,10 +17,8 @@ import com.example.board.post.dto.BoardDTO;
 import com.example.board.post.dto.PageRequestDTO;
 import com.example.board.post.dto.PageResultDTO;
 import com.example.board.post.entity.Board;
-import com.example.board.post.entity.QBoard;
 import com.example.board.post.repository.BoardRepository;
 import com.example.board.reply.dto.ReplyDTO;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
 
 import lombok.RequiredArgsConstructor;
@@ -33,6 +32,7 @@ public class BoardService {
     private final BoardRepository bR;
     private final MemberRepository mR;
     private final ModelMapper mapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Transactional(readOnly = true)
     public PageResultDTO<BoardDTO> getList(PageRequestDTO dto) {
@@ -72,6 +72,9 @@ public class BoardService {
                 mR.findByEmail(dto.getWriterEmail())
                         .orElseThrow(() -> new NoSuchElementException(
                                 "작성자 이메일 " + dto.getWriterEmail() + "에 해당하는 회원을 찾을 수 없습니다.")));
+        if (dto.getPassword() != null && !dto.getPassword().trim().isEmpty()) {
+            board.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
         Board savedBoard = bR.save(board);
         return savedBoard.getBno();
     }

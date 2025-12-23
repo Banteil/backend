@@ -67,11 +67,12 @@
             class="me-2"
           ></iconify-icon>
           <span
-            th:text="${replies != null ? replies.size() : boardDTO.replyCount}"
+            th:text="${replyCount != null ? replyCount : (replies != null ? replies.size() : 0)}"
             >0</span
           >개의 댓글
         </h5>
       </div>
+
       <div th:if="${replies == null}" class="list-group-item text-center py-4">
         <div
           class="spinner-border spinner-border-sm text-primary"
@@ -79,6 +80,7 @@
         ></div>
         <span class="ms-2 text-muted">댓글을 불러오는 중입니다...</span>
       </div>
+
       <div
         th:each="reply : ${replies}"
         class="list-group-item list-group-item-action"
@@ -88,7 +90,6 @@
             <div class="d-flex align-items-center mb-1">
               <img
                 src="/assets/images/profile/user-1.jpg"
-                alt=""
                 width="25"
                 height="25"
                 class="rounded-circle me-2"
@@ -101,16 +102,17 @@
             <small
               th:text="${#temporals.format(reply.createDateTime, 'yyyy-MM-dd HH:mm')}"
             ></small>
+
             <div
               class="btn-group btn-group-sm mt-1"
               th:with="userEmail=${#authentication.name}"
             >
               <th:block
                 th:if="${
-                  #authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')') 
-                  or (userEmail != 'anonymousUser' and userEmail == reply.replayerEmail)
-                  or (reply.replayerEmail == 'guest')
-              }"
+                            #authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')') 
+                            or (userEmail != 'anonymousUser' and userEmail == reply.replayerEmail)
+                            or (reply.replayerEmail == 'guest')
+                        }"
               >
                 <button
                   type="button"
@@ -118,7 +120,6 @@
                   th:data-rno="${reply.rno}"
                   th:data-text="${reply.text}"
                   th:data-replayer="${reply.replayer}"
-                  th:data-pw="${reply.password}"
                   th:data-email="${reply.replayerEmail}"
                   th:data-is-mine="${userEmail == reply.replayerEmail}"
                   th:data-role="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')') ? 'ADMIN' : 'USER'}"
@@ -130,7 +131,6 @@
                   class="btn btn-outline-danger btn-sm btn-remove-reply"
                   th:data-rno="${reply.rno}"
                   th:data-email="${reply.replayerEmail}"
-                  th:data-pw="${reply.password}"
                   th:data-is-mine="${userEmail == reply.replayerEmail}"
                   th:data-role="${#authorization.expression('hasAnyRole(''ROLE_ADMIN'', ''ROLE_MANAGER'')') ? 'ADMIN' : 'USER'}"
                 >
@@ -141,9 +141,10 @@
           </div>
         </div>
       </div>
+
       <div
-        th:if="${#lists.isEmpty(replies)}"
-        class="list-group-item text-center text-muted"
+        th:if="${replies != null and #lists.isEmpty(replies)}"
+        class="list-group-item text-center text-muted py-3"
       >
         등록된 댓글이 없습니다.
       </div>

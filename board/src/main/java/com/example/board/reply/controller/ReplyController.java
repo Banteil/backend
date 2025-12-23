@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -102,6 +103,7 @@ public class ReplyController {
         return "redirect:/board/read?bno=" + bno;
     }
 
+    @PreAuthorize("permitAll()")
     @GetMapping("/list/{bno}")
     public String getReplyList(@PathVariable("bno") Long bno, Model model) {
         log.info("댓글 목록 조각 요청: bno={}", bno);
