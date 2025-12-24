@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" layout:decorate="~{layouts/layout}">
+  <th:block layout:fragment="css"> </th:block>
+  <div class="container px-6 mx-auto grid" layout:fragment="content">
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Movie Read</h2>
+    <!-- New Table -->
+
+    <div class="w-full overflow-x-auto">
+      <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <form action="" method="post">
+          <div class="mt-4">
+            <label class="block text-sm">
+              <span class="text-gray-700 dark:text-gray-400">제목</span>
+              <input
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                placeholder="제목"
+                name="title"
+                value=""
+                readonly
+              />
+            </label>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm">
+              <span class="text-gray-700 dark:text-gray-400">리뷰 수</span>
+              <input
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                placeholder="리뷰수"
+                name="reviewCnt"
+                value=""
+                readonly
+              />
+            </label>
+          </div>
+          <div class="mt-4">
+            <label class="block text-sm">
+              <span class="text-gray-700 dark:text-gray-400">평점</span>
+              <input
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                placeholder="avg"
+                name="avg"
+                value=""
+                readonly
+              />
+            </label>
+          </div>
+          <div class="mt-4">
+            <a
+              sec:authorize="hasRole('ADMIN')"
+              href=""
+              class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
+              >수정</a
+            >
+            <a
+              href=""
+              class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
+              >목록</a
+            >
+          </div>
+        </form>
+      </div>
+      <!-- 포스터 보여주기 -->
+      <div class="uploadResult mb-4">
+        <ul>
+          <li>
+            <img class="block" data-bs-toggle="modal" data-bs-target="#imgModal" />
+          </li>
+        </ul>
+      </div>
+
+      <!-- 리뷰영역 -->
+      <div>
+        <div class="flex items-center">
+          <span>리뷰작성 [ <span class="review-cnt"></span> ]</span>
+        </div>
+      </div>
+
+      <!-- 리뷰작성 -->
+      <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <form action="" method="post" id="reviewForm">
+          <input type="hidden" name="rno" />
+          <input type="hidden" name="mid" />
+          <input type="hidden" name="mno" />
+          <input type="hidden" name="grade" />
+          <div class="mt-4">
+            <label class="block text-sm">
+              <span class="text-gray-700 dark:text-gray-400">작성자</span>
+              <input
+                readonly
+                name="nickname"
+                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+              />
+            </label>
+          </div>
+          <label class="block my-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">감상평</span>
+            <textarea
+              name="text"
+              class="block w-full mt-1 text-sm dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-textarea focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
+              rows="3"
+              placeholder="감상평을 등록해 주세요"
+            ></textarea>
+          </label>
+          <label class="block my-4 text-sm">
+            <span class="text-gray-700 dark:text-gray-400">평점 </span>
+            <div class="starrr"></div>
+          </label>
+          <button type="submit" class="btn btn-success">등록</button>
+        </form>
+      </div>
+
+      <!-- 리뷰목록 -->
+      <div class="mt-2 px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800 reviewList"></div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="imgModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">영화명</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <img src="" alt="" />
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <th:block layout:fragment="script">
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+      integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script th:src="@{/assets/js/starrr.js}"></script>
+    <script></script>
+  </th:block>
+</html>

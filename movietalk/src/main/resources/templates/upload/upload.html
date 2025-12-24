@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h3>업로드 테스트</h3>
+    <form action="" method="post" enctype="multipart/form-data">
+      <input
+        type="file"
+        name="uploadFiles"
+        id="uploadFiles"
+        multiple
+        accept="image/png, image/jpeg"
+      />
+      <button type="button">업로드</button>
+      <!--  -->
+    </form>
+
+    <div class="uploadResult mt-4 flex flex-wrap gap-4" id="output"></div>
+    <script>
+      const showUploadImages = (files) => {
+        const output = document.querySelector("#output");
+        files.forEach((file) => {
+          output.insertAdjacentHTML(
+            "beforeend",
+            `<img src="/upload/display?fileName=${file.imageURL}">`
+          );
+        });
+      };
+
+      document.querySelector("button").addEventListener("click", () => {
+        const uploadFiles = document.querySelector("[name='uploadFiles']");
+        const files = uploadFiles.files;
+        console.log(files);
+
+        const formData = new FormData();
+        for (let idx = 0; idx < files.length; idx++) {
+          formData.append("uploadFiles", files[idx]);
+        }
+        fetch("/upload/upload", {
+          method: "post",
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+            showUploadImages(data);
+            uploadFiles.value = "";
+          })
+          .catch((err) => console.error("Upload Error:", err));
+      });
+    </script>
+  </body>
+</html>
