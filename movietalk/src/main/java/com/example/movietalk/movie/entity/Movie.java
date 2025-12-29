@@ -2,10 +2,12 @@ package com.example.movietalk.movie.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.example.movietalk.common.entity.BaseEntity;
+import com.example.movietalk.movie.dto.MovieDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -47,4 +49,21 @@ public class Movie extends BaseEntity {
     @Builder.Default
     @OneToMany(mappedBy = "movie", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
+
+    public static Movie from(MovieDTO movieDto) {
+        Movie movie = Movie.builder()
+                .mno(movieDto.getMno())
+                .title(movieDto.getTitle())
+                .build();
+
+        if (movieDto.getMImages() != null && !movieDto.getMImages().isEmpty()) {
+            List<MovieImage> movieImageList = movieDto.getMImages().stream()
+                    .map(imgDto -> MovieImage.from(imgDto, movie)) // MovieImage의 from 호출
+                    .collect(Collectors.toList());
+
+            movie.setImages(movieImageList);
+        }
+
+        return movie;
+    }
 }

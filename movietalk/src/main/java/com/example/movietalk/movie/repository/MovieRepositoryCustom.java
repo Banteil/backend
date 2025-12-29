@@ -7,4 +7,6 @@ import com.example.movietalk.movie.dto.MovieDTO;
 
 public interface MovieRepositoryCustom {
     Page<MovieDTO> getListPageQuerydsl(Pageable pageable);
+
+    MovieDTO getMovieDetail(Long mno);
 }

@@ -34,20 +34,22 @@
               <td class="px-4 py-3 text-sm" th:text="${dto.mno}"></td>
               <td class="px-4 py-3">
                 <div class="flex items-center text-sm">
-                  <div
-                    class="relative hidden w-8 h-8 mr-3 rounded-full md:block"
-                  >
-                    <img
-                      th:if="${dto.mImages != null && dto.mImages.size() > 0}"
-                      class="object-cover w-full h-full rounded-full"
-                      th:src="|/upload/display?fileName=${dto.mImages[0].getThumbnailURL()}|"
-                      alt="Poster"
-                    />
-                    <div
-                      th:unless="${dto.mImages != null && dto.mImages.size() > 0}"
-                      class="w-full h-full bg-gray-200 rounded-full"
-                    ></div>
-                  </div>
+<div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
+  <th:block th:if="${dto.mImages != null && !dto.mImages.empty}">
+    <img
+      class="object-cover w-full h-full rounded-full"
+      th:src="|/upload/display?fileName=${dto.mImages[0].getThumbnailURL()}|"
+      alt="Poster"
+    />
+  </th:block>
+  
+  <div
+    th:unless="${dto.mImages != null && !dto.mImages.empty}"
+    class="w-full h-full bg-gray-200 rounded-full flex items-center justify-center"
+  >
+    <i class="fa-solid fa-film text-gray-400"></i>
+  </div>
+</div>
                   <div>
                     <p class="font-semibold">
                       <a

@@ -1,5 +1,7 @@
 package com.example.movietalk.movie.service;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.movietalk.common.dto.PageRequestDTO;
 import com.example.movietalk.common.dto.PageResultDTO;
 import com.example.movietalk.movie.dto.MovieDTO;
+import com.example.movietalk.movie.entity.Movie;
+import com.example.movietalk.movie.repository.MovieImageRepository;
 import com.example.movietalk.movie.repository.MovieRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -24,6 +28,16 @@ import lombok.extern.log4j.Log4j2;
 @Service
 public class MovieService {
     private final MovieRepository movieRepository;
+    private final MovieImageRepository movieImageRepository;
+
+    @Transactional
+    public Long register(MovieDTO dto) {
+        log.info("Movie register Start. DTO: {}", dto);
+        Movie movie = Movie.from(dto);
+        movieRepository.save(movie);
+        log.info("Movie saved. Mno: {}", movie.getMno());
+        return movie.getMno();
+    }
 
     @Transactional(readOnly = true)
     public PageResultDTO<MovieDTO> getMovieList(PageRequestDTO pageRequestDTO) {
@@ -44,7 +58,9 @@ public class MovieService {
 
     // 상세 조회
     @Transactional(readOnly = true)
-    public void getMovie(Long mno) {
-        movieRepository.getMovieWithAll(mno);
+    public MovieDTO getMovie(Long mno) {
+        Movie movie = movieRepository.findById(mno).orElseThrow();
+        MovieDTO movieDTO = MovieDTO.from(movie);
+        return movieDTO;
     }
 }

@@ -3,6 +3,9 @@ package com.example.movietalk.movie.dto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import com.example.movietalk.movie.entity.Movie;
 import com.example.movietalk.movie.entity.MovieImage;
 
 import lombok.AllArgsConstructor;
@@ -41,21 +44,22 @@ public class MovieDTO {
         this.updateDate = modDate;
     }
 
-    // public static MovieDTO from(Movie movie, List<MovieImage> mImages, Long
-    // reviewCnt, Double avg) {
-    // List<MovieImageDTO> movieImageDTOList = mImages.stream()
-    // .map(MovieImageDTO::from)
-    // .collect(Collectors.toList());
+    public static MovieDTO from(Movie movie) {
+        // 1. 기본 필드 매핑 및 Builder 생성
+        MovieDTO movieDTO = MovieDTO.builder()
+                .mno(movie.getMno())
+                .title(movie.getTitle())
+                .createDate(movie.getCreateDateTime())
+                .updateDate(movie.getUpdateDateTime())
+                .build();
 
-    // MovieDTO movieDTO = MovieDTO.builder()
-    // .mno(movie.getMno())
-    // .title(movie.getTitle())
-    // .avg(avg != null ? avg : 0.0)
-    // .reviewCnt(reviewCnt)
-    // .createDate(movie.getCreateDateTime())
-    // .updateDate(movie.getUpdateDateTime())
-    // .build();
-    // movieDTO.setMImages(movieImageDTOList);
-    // return movieDTO;
-    // }
+        if (movie.getImages() != null) {
+            List<MovieImageDTO> movieImageDTOList = movie.getImages().stream()
+                    .map(MovieImageDTO::from)
+                    .collect(Collectors.toList());
+
+            movieDTO.setMImages(movieImageDTOList);
+        }
+        return movieDTO;
+    }
 }

@@ -4,6 +4,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
   </head>
   <body>
     <h3>업로드 테스트</h3>
@@ -21,14 +28,51 @@
 
     <div class="uploadResult mt-4 flex flex-wrap gap-4" id="output"></div>
     <script>
+      document.querySelector("#output").addEventListener("click", (e) => {
+        // 1. 클릭된 요소가 a 태그이거나 a 태그의 자식(i 태그)인지 확인
+        const aTag = e.target.closest("a");
+
+        // a 태그가 없거나 삭제 버튼이 아니면 종료
+        if (!aTag) return;
+
+        // 2. a 태그의 기본 동작(링크 이동) 방지
+        e.preventDefault();
+
+        // 3. 삭제할 파일 경로 가져오기 (href 속성에 들어있는 imageURL)
+        const fileName = aTag.getAttribute("href");
+        const targetDiv = aTag.closest("div"); // 화면에서 삭제할 부모 요소
+
+        if (!confirm("이 이미지를 삭제하시겠습니까?")) return;
+
+        // 4. 서버에 삭제 요청 보내기
+        const formData = new FormData();
+        formData.append("fileName", fileName);
+
+        fetch("/upload/remove", {
+          method: "post",
+          body: formData,
+        })
+          .then((res) => {
+            if (res.ok) {
+              // 5. 서버 삭제 성공 시 화면에서 해당 div 제거
+              targetDiv.remove();
+              alert("삭제되었습니다.");
+            } else {
+              alert("삭제에 실패했습니다.");
+            }
+          })
+          .catch((err) => {
+            console.error("삭제 중 오류 발생:", err);
+          });
+      });
+
       const showUploadImages = (files) => {
         const output = document.querySelector("#output");
+        let tags = "";
         files.forEach((file) => {
-          output.insertAdjacentHTML(
-            "beforeend",
-            `<img src="/upload/display?fileName=${file.imageURL}">`
-          );
+          tags += `<div> <img src="/upload/display?fileName=${file.thumbnailURL}"> <a href="${file.imageURL}"> <i class="fa-solid fa-xmark"></i></a></div>`;
         });
+        output.insertAdjacentHTML("beforeend", tags);
       };
 
       document.querySelector("button").addEventListener("click", () => {

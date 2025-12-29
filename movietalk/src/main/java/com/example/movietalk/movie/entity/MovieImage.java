@@ -3,6 +3,7 @@ package com.example.movietalk.movie.entity;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.example.movietalk.common.entity.BaseEntity;
+import com.example.movietalk.movie.dto.MovieImageDTO;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -49,4 +50,15 @@ public class MovieImage extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mno")
     private Movie movie;
+
+    public static MovieImage from(MovieImageDTO dto, Movie movie) {
+        return MovieImage.builder()
+                .inum(dto.getInum())
+                .uuid(dto.getUuid())
+                .path(dto.getPath())
+                .imgName(dto.getImgName())
+                .ord(dto.getOrd())
+                .movie(movie)
+                .build();
+    }
 }

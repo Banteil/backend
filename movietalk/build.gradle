@@ -59,6 +59,9 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // 8. 썸네일
+    implementation 'net.coobird:thumbnailator:0.4.21'
 }
 
 tasks.withType(Test) {

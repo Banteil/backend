@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 
 import lombok.extern.log4j.Log4j2;
+import net.coobird.thumbnailator.Thumbnailator;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,7 +43,7 @@ public class UploadController {
 
     @ResponseBody
     @PostMapping("upload")
-    public List<MovieImageDTO> postUpload(MultipartFile[] uploadFiles) {
+    public List<MovieImageDTO> postUpload(@RequestParam("uploadFiles") MultipartFile[] uploadFiles) {
         String saveDirPath = makeDir();
         List<MovieImageDTO> upList = new ArrayList<>();
 
@@ -54,15 +56,18 @@ public class UploadController {
             String uuid = UUID.randomUUID().toString();
             String absolutePath = new File(uploadPath).getAbsolutePath();
 
-            File saveFile = new File(absolutePath + File.separator + saveDirPath, uuid + "_" + oriName);
+            File saveFile = new File(
+                    absolutePath + File.separator + saveDirPath + File.separator + uuid + "_" + oriName);
             // String saveName = uploadPath + File.separator + saveDirPath + File.separator
             // + uuid + "_" + oriName;
-
             upList.add(MovieImageDTO.builder().imgName(oriName).uuid(uuid).path(saveDirPath).build());
 
             try {
                 // 저장
                 file.transferTo(saveFile);
+                File thumbSaveFile = new File(
+                        absolutePath + File.separator + saveDirPath + File.separator + "s_" + uuid + "_" + oriName);
+                Thumbnailator.createThumbnail(saveFile, thumbSaveFile, 100, 100);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -83,7 +88,7 @@ public class UploadController {
 
     @ResponseBody
     @GetMapping("/display")
-    public ResponseEntity<byte[]> getFile(String fileName) {
+    public ResponseEntity<byte[]> getFile(@RequestParam("fileName") String fileName) {
         ResponseEntity<byte[]> result = null;
         try {
             String srcFileName = URLDecoder.decode(fileName, "UTF-8");
@@ -98,6 +103,28 @@ public class UploadController {
         } catch (Exception e) {
             log.error("Display Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return result;
+    }
+
+    @PostMapping("/remove")
+    public ResponseEntity<String> removeFile(@RequestParam("fileName") String fileName) {
+        log.info("삭제할 filename : {}", fileName);
+        ResponseEntity<String> result = null;
+        try {
+            String srcFileName = URLDecoder.decode(fileName, "UTF-8");
+            File file = new File(new File(uploadPath).getAbsolutePath() + File.separator + srcFileName);
+            log.info("Remove File Path: " + file.getAbsolutePath());
+
+            File thumbFile = new File(file.getParent(), "s_" + file.getName());
+            thumbFile.delete();
+            file.delete();
+
+            result = new ResponseEntity<>("success", HttpStatus.OK);
+
+        } catch (Exception e) {
+            log.error("Display Error: " + e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return result;
     }

@@ -2,11 +2,15 @@
 <html lang="en" layout:decorate="~{layouts/layout}">
   <th:block layout:fragment="css"> </th:block>
   <div class="container px-6 mx-auto grid" layout:fragment="content">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">Movie Read</h2>
+    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+      Movie Read
+    </h2>
     <!-- New Table -->
 
     <div class="w-full overflow-x-auto">
-      <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div
+        class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+      >
         <form action="" method="post">
           <div class="mt-4">
             <label class="block text-sm">
@@ -15,7 +19,7 @@
                 class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                 placeholder="제목"
                 name="title"
-                value=""
+                th:value="${dto.title}"
                 readonly
               />
             </label>
@@ -27,7 +31,7 @@
                 class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                 placeholder="리뷰수"
                 name="reviewCnt"
-                value=""
+                th:value="${dto.reviewCnt}"
                 readonly
               />
             </label>
@@ -39,7 +43,7 @@
                 class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                 placeholder="avg"
                 name="avg"
-                value=""
+                th:value="${dto.avg}"
                 readonly
               />
             </label>
@@ -52,7 +56,7 @@
               >수정</a
             >
             <a
-              href=""
+              th:href="@{/movie/list(page=${requestDTO.page})}"
               class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
               >목록</a
             >
@@ -61,9 +65,19 @@
       </div>
       <!-- 포스터 보여주기 -->
       <div class="uploadResult mb-4">
-        <ul>
-          <li>
-            <img class="block" data-bs-toggle="modal" data-bs-target="#imgModal" />
+        <ul class="flex flex-wrap gap-4">
+          <li
+            th:each="movieImage : ${dto.mImages}"
+            class="cursor-pointer"
+            th:data-file="${movieImage.getThumbnailURL()}"
+            th:data-full="${movieImage.getImageURL()}"
+          >
+            <img
+              class="block w-32 rounded shadow-md hover:opacity-75"
+              th:src="|/upload/display?fileName=${movieImage.getThumbnailURL()}|"
+              data-bs-toggle="modal"
+              data-bs-target="#imgModal"
+            />
           </li>
         </ul>
       </div>
@@ -76,7 +90,9 @@
       </div>
 
       <!-- 리뷰작성 -->
-      <div class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+      <div
+        class="px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800"
+      >
         <form action="" method="post" id="reviewForm">
           <input type="hidden" name="rno" />
           <input type="hidden" name="mid" />
@@ -110,21 +126,40 @@
       </div>
 
       <!-- 리뷰목록 -->
-      <div class="mt-2 px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800 reviewList"></div>
+      <div
+        class="mt-2 px-4 py-3 mb-8 bg-white rounded-lg shadow-md dark:bg-gray-800 reviewList"
+      ></div>
     </div>
     <!-- Modal -->
-    <div class="modal fade" id="imgModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <div
+      class="modal fade"
+      id="imgModal"
+      tabindex="-1"
+      aria-hidden="true"
+      data-bs-focus="false"
+    >
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">영화명</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <h1 class="modal-title fs-5">영화명</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
           </div>
-          <div class="modal-body">
-            <img src="" alt="" />
+          <div class="modal-body text-center">
+            <img src="" alt="" style="max-width: 100%; height: auto" />
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -137,7 +172,65 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    ></script>
     <script th:src="@{/assets/js/starrr.js}"></script>
-    <script></script>
+    <script th:inline="javascript">
+      $(document).ready(function () {
+          console.log("Document Ready - 스크립트 로드됨");
+
+          // [수정] 모달 객체를 미리 한 번만 생성하여 메모리 누수 방지
+          const imgModalElement = document.getElementById("imgModal");
+          const myModal = new bootstrap.Modal(imgModalElement);
+
+          // 1. 이미지 클릭 이벤트
+          $(document).on("click", ".uploadResult li img", function () {
+              const file = $(this).closest("li").data("full");
+              console.log("클릭된 파일 경로: ", file);
+
+              if (!file) {
+                  alert("이미지 경로를 찾을 수 없습니다.");
+                  return;
+              }
+
+              const modalImg = $("#imgModal .modal-body img");
+              modalImg.attr("src", "/upload/display?fileName=" + file);
+
+              // 모달 제목에 영화 제목 넣기 (Thymeleaf 변수 활용)
+              $("#imgModal .modal-title").text([[${dto.title}]] + " 원본 이미지");
+
+              myModal.show();
+          });
+
+          // [추가] 모달이 완전히 닫힐 때 실행되는 이벤트 (배경 굳음 방지)
+          imgModalElement.addEventListener('hidden.bs.modal', function () {
+              console.log("모달 닫힘 - 뒷배경 정리");
+              // 1. 이미지 src 초기화 (다음 이미지가 열릴 때 깜빡임 방지)
+              $("#imgModal .modal-body img").attr("src", "");
+
+              // 2. 혹시라도 남아있을 수 있는 배경(Backdrop) 강제 제거
+              $('.modal-backdrop').remove();
+              $('body').removeClass('modal-open');
+              $('body').css('overflow', '');
+              $('body').css('padding-right', '');
+          });
+
+          // 2. 별점(starrr) 초기화
+          if ($.fn.starrr) {
+              $(".starrr").starrr({
+                  rating: 0,
+                  change: function (e, value) {
+                      if (value) {
+                          console.log("선택된 평점: ", value);
+                          $('#reviewForm input[name="grade"]').val(value);
+                      }
+                  },
+              });
+          } else {
+              console.error("starrr.js 라이브러리가 로드되지 않았습니다.");
+          }
+      });
+    </script>
   </th:block>
 </html>
