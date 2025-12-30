@@ -2,7 +2,11 @@
 <html lang="en" layout:decorate="~{layouts/layout}">
   <th:block layout:fragment="css"> </th:block>
   <div class="container px-6 mx-auto grid" layout:fragment="content">
-    <h2 class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200">
+    <h2
+      id="movieTitle"
+      th:data-title="${dto.title}"
+      class="my-6 text-2xl font-semibold text-gray-700 dark:text-gray-200"
+    >
       Movie Read
     </h2>
     <!-- New Table -->
@@ -50,13 +54,20 @@
           </div>
           <div class="mt-4">
             <a
-              sec:authorize="hasRole('ADMIN')"
-              href=""
+              th:href="@{/movie/modify(mno=${dto.mno}, 
+                page=${requestDTO.page}, 
+                size=${requestDTO.size},
+                type=${requestDTO.type},
+                keyword=${requestDTO.keyword})}"
               class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-purple-600 border border-transparent rounded-lg active:bg-purple-600 hover:bg-purple-700 focus:outline-none focus:shadow-outline-purple"
               >수정</a
             >
+
             <a
-              th:href="@{/movie/list(page=${requestDTO.page})}"
+              th:href="@{/movie/list(page=${requestDTO.page}, 
+                size=${requestDTO.size},
+                type=${requestDTO.type},
+                keyword=${requestDTO.keyword})}"
               class="px-4 py-2 text-sm font-medium leading-5 text-white transition-colors duration-150 bg-blue-600 border border-transparent rounded-lg active:bg-blue-600 hover:bg-blue-700 focus:outline-none focus:shadow-outline-blue"
               >목록</a
             >
@@ -131,13 +142,7 @@
       ></div>
     </div>
     <!-- Modal -->
-    <div
-      class="modal fade"
-      id="imgModal"
-      tabindex="-1"
-      aria-hidden="true"
-      data-bs-focus="false"
-    >
+    <div class="modal fade" id="imgModal" role="dialog" aria-modal="true">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
@@ -172,65 +177,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    ></script>
     <script th:src="@{/assets/js/starrr.js}"></script>
-    <script th:inline="javascript">
-      $(document).ready(function () {
-          console.log("Document Ready - 스크립트 로드됨");
-
-          // [수정] 모달 객체를 미리 한 번만 생성하여 메모리 누수 방지
-          const imgModalElement = document.getElementById("imgModal");
-          const myModal = new bootstrap.Modal(imgModalElement);
-
-          // 1. 이미지 클릭 이벤트
-          $(document).on("click", ".uploadResult li img", function () {
-              const file = $(this).closest("li").data("full");
-              console.log("클릭된 파일 경로: ", file);
-
-              if (!file) {
-                  alert("이미지 경로를 찾을 수 없습니다.");
-                  return;
-              }
-
-              const modalImg = $("#imgModal .modal-body img");
-              modalImg.attr("src", "/upload/display?fileName=" + file);
-
-              // 모달 제목에 영화 제목 넣기 (Thymeleaf 변수 활용)
-              $("#imgModal .modal-title").text([[${dto.title}]] + " 원본 이미지");
-
-              myModal.show();
-          });
-
-          // [추가] 모달이 완전히 닫힐 때 실행되는 이벤트 (배경 굳음 방지)
-          imgModalElement.addEventListener('hidden.bs.modal', function () {
-              console.log("모달 닫힘 - 뒷배경 정리");
-              // 1. 이미지 src 초기화 (다음 이미지가 열릴 때 깜빡임 방지)
-              $("#imgModal .modal-body img").attr("src", "");
-
-              // 2. 혹시라도 남아있을 수 있는 배경(Backdrop) 강제 제거
-              $('.modal-backdrop').remove();
-              $('body').removeClass('modal-open');
-              $('body').css('overflow', '');
-              $('body').css('padding-right', '');
-          });
-
-          // 2. 별점(starrr) 초기화
-          if ($.fn.starrr) {
-              $(".starrr").starrr({
-                  rating: 0,
-                  change: function (e, value) {
-                      if (value) {
-                          console.log("선택된 평점: ", value);
-                          $('#reviewForm input[name="grade"]').val(value);
-                      }
-                  },
-              });
-          } else {
-              console.error("starrr.js 라이브러리가 로드되지 않았습니다.");
-          }
-      });
-    </script>
+    <script th:src="@{/assets/js/read.js}"></script>
   </th:block>
 </html>

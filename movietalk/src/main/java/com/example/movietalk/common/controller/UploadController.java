@@ -42,33 +42,46 @@ public class UploadController {
     }
 
     @ResponseBody
-    @PostMapping("upload")
+    @PostMapping("/upload")
     public List<MovieImageDTO> postUpload(@RequestParam("uploadFiles") MultipartFile[] uploadFiles) {
-        String saveDirPath = makeDir();
+        // 1. 날짜 경로 생성 (2025/12/30)
+        String datePath = makeDir();
+        // 2. DB에 저장될 상대 경로 (temp/2025/12/30)
+        String dbSavePath = "temp" + File.separator + datePath;
+
+        // 3. uploadPath를 절대 경로로 변환
+        String absolutePath = new File(uploadPath).getAbsolutePath();
+
+        // 4. 실제 저장될 폴더 (절대경로/temp/날짜)
+        File saveDir = new File(absolutePath + File.separator + dbSavePath);
+
+        if (!saveDir.exists()) {
+            saveDir.mkdirs();
+        }
+
         List<MovieImageDTO> upList = new ArrayList<>();
 
         for (MultipartFile file : uploadFiles) {
-            log.info("OriginalFilename {}", file.getOriginalFilename());
-            log.info("size {}", file.getSize());
-            log.info("content type {}", file.getContentType());
-
             String oriName = file.getOriginalFilename();
             String uuid = UUID.randomUUID().toString();
-            String absolutePath = new File(uploadPath).getAbsolutePath();
 
-            File saveFile = new File(
-                    absolutePath + File.separator + saveDirPath + File.separator + uuid + "_" + oriName);
-            // String saveName = uploadPath + File.separator + saveDirPath + File.separator
-            // + uuid + "_" + oriName;
-            upList.add(MovieImageDTO.builder().imgName(oriName).uuid(uuid).path(saveDirPath).build());
+            // 5. 최종 파일 객체 (절대경로/temp/날짜/uuid_name.jpg)
+            File saveFile = new File(saveDir.getAbsolutePath() + File.separator + uuid + "_" + oriName);
 
             try {
-                // 저장
+                // 절대 경로가 문자열로 완벽하게 조립되었으므로 에러 없이 저장될 것입니다.
                 file.transferTo(saveFile);
-                File thumbSaveFile = new File(
-                        absolutePath + File.separator + saveDirPath + File.separator + "s_" + uuid + "_" + oriName);
+
+                File thumbSaveFile = new File(saveDir.getAbsolutePath() + File.separator + "s_" + uuid + "_" + oriName);
                 Thumbnailator.createThumbnail(saveFile, thumbSaveFile, 100, 100);
+
+                upList.add(MovieImageDTO.builder()
+                        .imgName(oriName)
+                        .uuid(uuid)
+                        .path(dbSavePath)
+                        .build());
             } catch (Exception e) {
+                log.error("Upload Error: " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -109,24 +122,22 @@ public class UploadController {
 
     @PostMapping("/remove")
     public ResponseEntity<String> removeFile(@RequestParam("fileName") String fileName) {
-        log.info("삭제할 filename : {}", fileName);
-        ResponseEntity<String> result = null;
         try {
             String srcFileName = URLDecoder.decode(fileName, "UTF-8");
             File file = new File(new File(uploadPath).getAbsolutePath() + File.separator + srcFileName);
-            log.info("Remove File Path: " + file.getAbsolutePath());
 
+            // 썸네일 파일도 같이 삭제
             File thumbFile = new File(file.getParent(), "s_" + file.getName());
-            thumbFile.delete();
-            file.delete();
 
-            result = new ResponseEntity<>("success", HttpStatus.OK);
+            if (thumbFile.exists())
+                thumbFile.delete();
+            if (file.exists())
+                file.delete();
 
+            return new ResponseEntity<>("success", HttpStatus.OK);
         } catch (Exception e) {
-            log.error("Display Error: " + e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return result;
     }
 
 }

@@ -66,4 +66,8 @@ public class Movie extends BaseEntity {
 
         return movie;
     }
+
+    public void addImage(MovieImage image) {
+        this.images.add(image);
+    }
 }

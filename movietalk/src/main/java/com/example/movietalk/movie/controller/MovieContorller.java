@@ -53,6 +53,35 @@ public class MovieContorller {
         MovieDTO movieDTO = movieService.getMovie(mno);
 
         model.addAttribute("dto", movieDTO);
+        model.addAttribute("pageRequestDTO", requestDTO);
+    }
+
+    @PostMapping("/modify")
+    public String postModify(MovieDTO movieDTO, RedirectAttributes redirectAttributes, PageRequestDTO pageRequestDTO) {
+        log.info("영화 수정 요청 DTO: {}", movieDTO);
+        Long mno = movieService.update(movieDTO);
+        redirectAttributes.addFlashAttribute("msg", mno + "번 영화가 수정되었습니다.");
+        redirectAttributes.addAttribute("mno", mno);
+        redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+        redirectAttributes.addAttribute("size", pageRequestDTO.getSize());
+        redirectAttributes.addAttribute("type", pageRequestDTO.getType());
+        redirectAttributes.addAttribute("keyword", pageRequestDTO.getKeyword());
+        return "redirect:/movie/read";
+    }
+
+    @PostMapping("/remove")
+    public String postRemove(@RequestParam("mno") Long mno, RedirectAttributes redirectAttributes,
+            PageRequestDTO pageRequestDTO) {
+        log.info("영화 삭제 요청 mno: {}", mno);
+        // 서비스에서 DB 및 물리 파일 삭제 처리
+        movieService.removeWithFiles(mno);
+        redirectAttributes.addFlashAttribute("msg", mno + "번 영화가 삭제되었습니다.");
+
+        redirectAttributes.addAttribute("page", pageRequestDTO.getPage());
+        redirectAttributes.addAttribute("size", pageRequestDTO.getSize());
+        redirectAttributes.addAttribute("type", pageRequestDTO.getType());
+        redirectAttributes.addAttribute("keyword", pageRequestDTO.getKeyword());
+        return "redirect:/movie/list";
     }
 
 }

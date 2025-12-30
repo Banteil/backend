@@ -24,18 +24,18 @@
               />
             </label>
           </div>
-          <div class="mt-4">
+        <div class="mt-4">
             <label class="block text-sm">
-              <span class="text-gray-700 dark:text-gray-400">포스터</span>
-              <input
-                class="block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
-                name="file"
-                type="file"
-                multiple
-                accept="image/png, image/jpeg"
-              />
+                <span class="text-gray-700 dark:text-gray-400">포스터</span>
+                <input
+                    id="commonFileInput"
+                    class="block w-full mt-1 text-sm ... form-input"
+                    type="file"
+                    multiple
+                    accept="image/png, image/jpeg"
+                />
             </label>
-          </div>
+        </div>
           <div class="mt-4">
             <button
               type="submit"
@@ -52,13 +52,15 @@
         </form>
       </div>
       <!-- 포스터 보여주기 -->
-      <div class="uploadResult mb-4">
-        <ul></ul>
+      <div id="commonUploadResult" class="uploadResult mt-4 mb-4">
+          <ul class="flex flex-wrap gap-4">
+          </ul>
       </div>
     </div>
   </div>
   <th:block layout:fragment="script">
-    <script th:src="@{/assets/js/create.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script th:src="@{/assets/js/upload.js}"></script>
+    <script th:src="@{/assets/js/create.js}"></script>    
   </th:block>
 </html>

@@ -52,10 +52,12 @@
 </div>
                   <div>
                     <p class="font-semibold">
-                      <a
-                        th:href="@{/movie/read(mno=${dto.mno}, page=${result.current})}"
-                        th:text="${dto.title}"
-                      ></a>
+                      <a th:href="@{/movie/read(mno=${dto.mno}, 
+                                      page=${result.current}, 
+                                      size=${result.pageRequestDTO.size},
+                                      type=${result.pageRequestDTO.type},
+                                      keyword=${result.pageRequestDTO.keyword})}"
+                          th:text="${dto.title}"></a>
                     </p>
                   </div>
                 </div>
@@ -84,53 +86,56 @@
           Showing [[${result.current}]] page of total [[${result.totalPage}]]
         </span>
         <span class="col-span-2"></span>
+        <!-- Pagination -->
+<span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
+  <nav aria-label="Table navigation">
+    <ul class="inline-flex items-center">
+      
+      <li th:if="${result.prev}">
+        <a
+          class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
+          th:href="@{/movie/list(page=${result.start - 1})}"
+          aria-label="Previous"
+        >
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+            <path
+              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+            ></path>
+          </svg>
+        </a>
+      </li>
 
-        <span class="flex col-span-4 mt-2 sm:mt-auto sm:justify-end">
-          <nav aria-label="Table navigation">
-            <ul class="inline-flex items-center">
-              <li th:if="${result.prev}">
-                <a
-                  class="px-3 py-1 rounded-md rounded-l-lg focus:outline-none focus:shadow-outline-purple"
-                  th:href="@{/movie/list(page=${result.prevPage})}"
-                  aria-label="Previous"
-                >
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                    <path
-                      d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                    ></path>
-                  </svg>
-                </a>
-              </li>
+      <li th:each="page: ${result.pageNumList}">
+        <a
+          th:href="@{/movie/list(page=${page})}"
+          th:classappend="${result.current == page} ? 'bg-purple-600 text-white border border-purple-600' : 'text-gray-600'"
+          class="px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple transition-colors duration-150"
+          th:text="${page}"
+        >
+        </a>
+      </li>
 
-              <li th:each="page: ${result.pageNumList}">
-                <a
-                  th:href="@{/movie/list(page=${page})}"
-                  th:class="'px-3 py-1 rounded-md focus:outline-none focus:shadow-outline-purple ' + ${result.current == page ? 'bg-purple-600 text-white' : ''}"
-                  th:text="${page}"
-                >
-                </a>
-              </li>
-
-              <li th:if="${result.next}">
-                <a
-                  class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
-                  th:href="@{/movie/list(page=${result.nextPage})}"
-                  aria-label="Next"
-                >
-                  <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                    <path
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clip-rule="evenodd"
-                      fill-rule="evenodd"
-                    ></path>
-                  </svg>
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </span>
+      <li th:if="${result.next}">
+        <a
+          class="px-3 py-1 rounded-md rounded-r-lg focus:outline-none focus:shadow-outline-purple"
+          th:href="@{/movie/list(page=${result.end + 1})}"
+          aria-label="Next"
+        >
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+            <path
+              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+              clip-rule="evenodd"
+              fill-rule="evenodd"
+            ></path>
+          </svg>
+        </a>
+      </li>
+      
+    </ul>
+  </nav>
+</span>
       </div>
     </div>
 
