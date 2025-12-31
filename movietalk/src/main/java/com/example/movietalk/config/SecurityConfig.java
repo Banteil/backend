@@ -7,7 +7,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,14 +14,19 @@ import org.springframework.security.web.SecurityFilterChain;
 // import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices;
 // import org.springframework.security.web.authentication.rememberme.TokenBasedRememberMeServices.RememberMeTokenAlgorithm;
 
+import com.example.movietalk.member.handler.CustomAuthFailureHandler;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @EnableMethodSecurity
 @EnableWebSecurity // 모든 웹 요청에 대해 Securty Filter Chain 적용
 @Log4j2
 @Configuration // 스프링 설정 클래스
+@RequiredArgsConstructor
 public class SecurityConfig {
 
+        private final CustomAuthFailureHandler customAuthFailureHandler;
         // private final MemberOauth2Service clubOauth2Service;
 
         // SecurityConfig(MemberOauth2Service clubOauth2Service) {
@@ -31,42 +35,28 @@ public class SecurityConfig {
 
         // 시큐리티 설정 클래스
         @Bean
-        SecurityFilterChain securityFilterChain(HttpSecurity http)
-                        throws Exception {
-
-                // 1. 인가 설정 (Authorization)
+        SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.authorizeHttpRequests(auth -> auth
-                                .anyRequest().permitAll() // 나머지 모든 요청 허용 (메서드 보안 @PreAuthorize 활용 권장)
-                );
+                                // .requestMatchers("/movie/create", "/movie/modify",
+                                // "/movie/remove").hasRole("ADMIN")
+                                .requestMatchers("/assets/**", "/css/**", "/js/**").permitAll()
+                                .anyRequest().permitAll());
 
-                // // 2. 폼 로그인 설정 (Form Login)
-                // http.formLogin(login -> login
-                // .loginPage("/member/login")
-                // .loginProcessingUrl("/member/login")
-                // .successHandler(loginSuccessHandler())
-                // .permitAll());
+                // 폼 로그인 설정 활성화
+                http.formLogin(login -> login
+                                .loginPage("/member/login")
+                                .loginProcessingUrl("/login") // HTML form action과 일치해야 함
+                                .defaultSuccessUrl("/movie/list")
+                                .failureHandler(customAuthFailureHandler)
+                                .permitAll());
 
-                // // 3. OAuth2 로그인 설정 (Social Login)
-                // http.oauth2Login(oauth2 -> oauth2
-                // .loginPage("/member/login")
-                // .userInfoEndpoint(userInfo -> userInfo.userService(clubOauth2Service)));
+                http.logout(logout -> logout
+                                .logoutUrl("/member/logout")
+                                .logoutSuccessUrl("/movie/list")
+                                .invalidateHttpSession(true)
+                                .deleteCookies("JSESSIONID"));
 
-                // // 4. 로그아웃 설정 (Logout)
-                // http.logout(logout -> logout
-                // .logoutUrl("/member/logout")
-                // .logoutSuccessUrl("/")
-                // .invalidateHttpSession(true)
-                // .deleteCookies("JSESSIONID", "remember-me") // 리멤버미 쿠키도 함께 삭제 권장
-                // );
-
-                http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS));
-
-                // // 5. 자동 로그인 설정 (Remember-Me)
-                // http.rememberMe(remember -> remember
-                // .rememberMeServices(rememberMeServices));
-
-                // 6. CSRF 설정 (필요 시 추가)
-                http.csrf(csrf -> csrf.disable()); // REST API 중심이라면 검토
+                http.csrf(csrf -> csrf.disable());
 
                 return http.build();
         }

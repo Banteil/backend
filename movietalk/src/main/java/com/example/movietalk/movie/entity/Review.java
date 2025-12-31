@@ -4,6 +4,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.example.movietalk.common.entity.BaseEntity;
 import com.example.movietalk.member.entity.Member;
+import com.example.movietalk.movie.dto.ReviewDTO;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -45,4 +46,18 @@ public class Review extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mid")
     private Member member;
+
+    public ReviewDTO toDTO() {
+        return ReviewDTO.builder()
+                .rno(rno)
+                .mno(movie.getMno())
+                .mid(member.getMid())
+                .nickname(member.getNickname())
+                .email(member.getEmail())
+                .grade(grade)
+                .text(text)
+                .createDate(getCreateDateTime())
+                .updateDate(getUpdateDateTime())
+                .build();
+    }
 }

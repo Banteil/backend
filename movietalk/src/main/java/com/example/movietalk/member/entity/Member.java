@@ -32,7 +32,7 @@ import lombok.ToString;
 @Builder
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "reviews")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseEntity {

@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.movietalk.member.entity.Member;
 import com.example.movietalk.member.entity.constant.Role;
-import com.example.movietalk.member.repository.MemberRepositoy;
+import com.example.movietalk.member.repository.MemberRepository;
 import com.example.movietalk.movie.entity.Movie;
 import com.example.movietalk.movie.entity.MovieImage;
 import com.example.movietalk.movie.entity.Review;
@@ -36,7 +36,7 @@ public class MovieRepositoryTest {
     @Autowired
     private ReviewRepository reviewRepository;
     @Autowired
-    private MemberRepositoy memberRepositoy;
+    private MemberRepository memberRepositoy;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
