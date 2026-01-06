@@ -1,8 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" layout:decorate="~{layouts/layout}">
-  <div class="container px-6 mx-auto mt-8 flex flex-col overflow-y-auto md:flex-row" layout:fragment="content">
+  <div
+    class="container px-6 mx-auto mt-8 flex flex-col overflow-y-auto md:flex-row"
+    layout:fragment="content"
+  >
     <div class="h-32 md:h-auto md:w-1/2">
-      <img aria-hidden="true" class="object-cover w-full h-full dark:hidden" th:src="@{/assets/img/create-account-office.jpeg}" alt="Office" />
+      <img
+        aria-hidden="true"
+        class="object-cover w-full h-full dark:hidden"
+        th:src="@{/assets/img/create-account-office.jpeg}"
+        alt="Office"
+      />
       <img
         aria-hidden="true"
         class="hidden object-cover w-full h-full dark:block"
@@ -12,9 +20,11 @@
     </div>
     <div class="flex items-center justify-center p-6 sm:p-12 md:w-1/2">
       <div class="w-full">
-        <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">Create account</h1>
+        <h1 class="mb-4 text-xl font-semibold text-gray-700 dark:text-gray-200">
+          Create account
+        </h1>
 
-        <form action="" method="post" object="">
+        <form th:action="@{/member/register}" method="post" object="">
           <label class="block text-sm">
             <span class="text-gray-700 dark:text-gray-400">Email</span>
             <input
@@ -66,7 +76,12 @@
         <hr class="my-8" />
 
         <p class="mt-4">
-          <a class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline" href=""> Already have an account? Login </a>
+          <a
+            class="text-sm font-medium text-purple-600 dark:text-purple-400 hover:underline"
+            href=""
+          >
+            Already have an account? Login
+          </a>
         </p>
       </div>
     </div>

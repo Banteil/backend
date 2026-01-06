@@ -9,4 +9,5 @@ public class HomeController {
     public String getHome() {
         return "redirect:/movie/list";
     }
+
 }

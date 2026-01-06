@@ -1,6 +1,7 @@
 package com.example.movietalk.member.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -8,6 +9,7 @@ import org.springframework.security.core.userdetails.User;
 import java.util.List;
 
 @Getter
+@Setter
 @ToString
 public class MemberAuthDTO extends User {
     private String email;

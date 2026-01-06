@@ -37,8 +37,9 @@
 <div class="relative hidden w-8 h-8 mr-3 rounded-full md:block">
   <th:block th:if="${dto.mImages != null && !dto.mImages.empty}">
     <img
+      th:if="${dto.mImages != null && dto.mImages.size() > 0}"
       class="object-cover w-full h-full rounded-full"
-      th:src="|/upload/display?fileName=${dto.mImages[0].getThumbnailURL()}|"
+      th:src="@{/upload/display(fileName=${dto.mImages[0].getThumbnailURL()})}"
       alt="Poster"
     />
   </th:block>
@@ -64,10 +65,7 @@
               </td>
               <td class="px-4 py-3 text-sm" th:text="${dto.reviewCnt}">0</td>
               <td class="px-4 py-3 text-xs">
-                <span
-                  class="px-2 py-1 font-semibold leading-tight text-green-700 bg-green-100 rounded-full"
-                  th:text="${#numbers.formatDecimal(dto.avg, 1, 1)}"
-                  >0.0</span
+<span th:text="${dto.avg != null ? #numbers.formatDecimal(dto.avg, 1, 1) : '0.0'}">0.0</span>
                 >
               </td>
               <td

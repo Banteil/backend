@@ -6,6 +6,7 @@
 **/.gitignore
 **/.gitattributes
 **/application-oauth.properties
+**/application-oauth.yml
 
 ### Java ###
 # Compiled class file
